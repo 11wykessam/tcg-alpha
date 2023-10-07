@@ -2,14 +2,15 @@ package com.wykessam.tsgalpha.model.card;
 
 /**
  * @author Samuel Wykes.
+ * Enum representing the allegiance of a given card.
  */
-public enum CreatureAllegiance {
+public enum Allegiance {
 
     EMPIRE_OF_FIRE("Empire of Fire");
 
     private final String name;
 
-    CreatureAllegiance(final String name) {
+    Allegiance(final String name) {
         this.name = name;
     }
 

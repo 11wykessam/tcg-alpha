@@ -9,24 +9,6 @@ import java.util.Set;
 public interface ICreature extends ICard {
 
     /**
-     * Get the original name of the card.
-     * @return {@link String}.
-     */
-    String getOriginalName();
-
-    /**
-     * Get names that could apply to the card.
-     * @return {@link String}.
-     */
-    Set<String> getCardNames();
-
-    /**
-     * Get the summoning requirement for the card.
-     * @return {@link Integer}.
-     */
-    Integer getSummoningRequirement();
-
-    /**
      * Get the type of the card.
      * @return {@link CreatureType}.
      */
