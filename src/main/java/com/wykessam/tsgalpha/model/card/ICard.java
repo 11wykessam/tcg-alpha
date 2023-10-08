@@ -1,5 +1,7 @@
 package com.wykessam.tsgalpha.model.card;
 
+import com.wykessam.tsgalpha.model.card.effect.IEffect;
+
 import java.util.Set;
 
 /**
@@ -21,15 +23,15 @@ public interface ICard {
     Set<String> getCardNames();
 
     /**
-     * Get the number of charges needed to use the card.
-     * @return {@link Integer}.
-     */
-    Integer getRequirement();
-
-    /**
      * Get the allegiance of the card.
      * @return {@link Allegiance} object.
      */
     Allegiance getAllegiance();
+
+    /**
+     * Get the possible effects of the card.
+     * @return {@link IEffect}.
+     */
+    Set<IEffect> getEffects();
 
 }

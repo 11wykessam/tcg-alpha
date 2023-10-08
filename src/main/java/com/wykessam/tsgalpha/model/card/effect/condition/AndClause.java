@@ -1,5 +1,6 @@
 package com.wykessam.tsgalpha.model.card.effect.condition;
 
+import com.wykessam.tsgalpha.model.game.IGame;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -31,4 +32,13 @@ public class AndClause<T extends IConditionalClause, U extends IConditionalClaus
         );
     }
 
+    /**
+     * Resolves the condition based on the state of the game.
+     * @param game {@link IGame}.
+     * @return {@link Boolean}.
+     */
+    @Override
+    public Boolean resolve(final IGame game) {
+        return this.firstCondition.resolve(game) && this.secondCondition.resolve(game);
+    }
 }

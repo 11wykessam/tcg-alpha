@@ -1,6 +1,6 @@
 package com.wykessam.tsgalpha.model.card;
 
-import java.util.Set;
+import com.wykessam.tsgalpha.model.card.effect.IEffect;
 
 /**
  * @author Samuel Wykes.
@@ -9,9 +9,9 @@ import java.util.Set;
 public interface IDisruption extends ICard {
 
     /**
-     * Get the effect of the card.
-     * @return {@link IDisruptionEffect}.
+     * Get the number of charges needed to use the card.
+     * @return {@link Integer}.
      */
-    IDisruptionEffect getEffect();
+    Integer getRequirement();
 
 }

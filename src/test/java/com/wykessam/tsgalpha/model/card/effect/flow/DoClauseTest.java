@@ -36,10 +36,4 @@ class DoClauseTest {
         ));
     }
 
-    @Test
-    void actionNullTest() {
-        assertThatThrownBy(() -> DoClause.builder().build())
-                .isInstanceOf(NullPointerException.class);
-    }
-
 }

@@ -1,18 +1,22 @@
 package com.wykessam.tsgalpha.model.card;
 
-import java.util.Set;
-
 /**
  * @author Samuel Wykes.
  * Represents a creature card in the TCG.
  */
-public interface ICreature extends ICard {
+public interface ICreatureCard extends ICard {
 
     /**
      * Get the type of the card.
      * @return {@link CreatureType}.
      */
     CreatureType getCardType();
+
+    /**
+     * Get the number of charges needed to use the card.
+     * @return {@link Integer}.
+     */
+    Integer getRequirement();
 
     /**
      * Get the size of the card.
@@ -31,11 +35,5 @@ public interface ICreature extends ICard {
      * @return {@link Integer}.
      */
     Integer getCritical();
-
-    /**
-     * Get the effect of the card.
-     * @return {@link ICreatureEffect} object.
-     */
-    ICreatureEffect getEffect();
 
 }
