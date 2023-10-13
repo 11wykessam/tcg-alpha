@@ -1,7 +1,8 @@
 package com.wykessam.tsgalpha.model.card.effect;
 
-import com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResult;
-import com.wykessam.tsgalpha.model.game.IGame;
+import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
+import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Samuel Wykes.
@@ -10,21 +11,22 @@ import com.wykessam.tsgalpha.model.game.IGame;
 public interface IClause {
 
     /**
-     * Resolve the effect of the clause.
-     * @param game {@link IGame}.
-     * @return {@link ResolutionResult}.
-     */
-    ResolutionResult resolve(final IGame game);
-
-    /**
      * Get the current resolution state of the clause.
      * @return {@link ResolutionState}.
      */
     ResolutionState getResolutionState();
 
     /**
-     * Reset the clause to the ready state.
+     * Attempts to resolve the clause.
+     * @param request {@link EffectResolutionRequestV1}.
+     * @return {@link EffectResolutionResponseV2}.
      */
-    void reset();
+    Mono<EffectResolutionResponseV2> resolve(final EffectResolutionRequestV1 request);
+
+    /**
+     * Attempt to reset the clause to ready state.
+     * @return {@link Void}.
+     */
+    Mono<Void> reset();
 
 }

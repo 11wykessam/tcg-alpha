@@ -1,18 +1,17 @@
 package com.wykessam.tsgalpha.model.card.effect.flow;
 
+import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
+import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
 import com.wykessam.tsgalpha.model.card.effect.ResolutionState;
-import com.wykessam.tsgalpha.model.card.effect.action.IActionClause;
-import com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResult;
-import com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResultState;
-import com.wykessam.tsgalpha.model.game.IGame;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotNull;
 
-import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.*;
-import static com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResultState.SUCCESS;
+import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.READY;
+import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.SUCCESS;
 
 /**
  * @author Samuel Wykes.
@@ -43,29 +42,8 @@ public class DoThenClause<T extends IFlowClause, U extends IFlowClause> implemen
     }
 
     /**
-     * Resolve the clauses.
-     * Resolve the first clause, if complete then resolve second clause.
-     * @param game {@link IGame}.
-     * @return {@link ResolutionResult}.
-     */
-    @Override
-    public ResolutionResult resolve(final IGame game) {
-        this.resolutionState = IN_PROGRESS;
-
-        // resolve first clause if necessary.
-        if (this.firstClause.getResolutionState() != COMPLETE) {
-            final ResolutionResult firstResult = this.firstClause.resolve(game);
-            if (firstResult.getState() != SUCCESS) return firstResult;
-        }
-
-        // resolve second clause.
-        final ResolutionResult secondResult = this.secondClause.resolve(game);
-        if (secondResult.getState() == SUCCESS) this.resolutionState = COMPLETE;
-        return secondResult;
-    }
-
-    /**
-     * Get the current state of this clause's resolution.
+     * Get the current state of the clause's resolution.
+     *
      * @return {@link ResolutionState}.
      */
     @Override
@@ -75,12 +53,30 @@ public class DoThenClause<T extends IFlowClause, U extends IFlowClause> implemen
     }
 
     /**
-     * Reset the clause to the ready state.
+     * Resolve the effect.
+     * Resolve the first effect, if successful, resolve the second.
+     * @param request {@link EffectResolutionRequestV1}.
+     * @return {@link EffectResolutionResponseV2}.
      */
     @Override
-    public void reset() {
-        this.firstClause.reset();
-        this.secondClause.reset();
-        this.resolutionState = READY;
+    public Mono<EffectResolutionResponseV2> resolve(final EffectResolutionRequestV1 request) {
+        return resolveSubClause(request, this.firstClause)
+                .flatMap(response ->
+                        response.getResolutionState().equals(SUCCESS)
+                                ? resolveSubClause(request, this.secondClause)
+                                : Mono.just(response)
+                );
+    }
+
+    private static Mono<EffectResolutionResponseV2> resolveSubClause(
+            final EffectResolutionRequestV1 request, final IFlowClause clause) {
+        return clause.getResolutionState().equals(SUCCESS)
+                ? Mono.just(EffectResolutionResponseV2.success())
+                : clause.resolve(request);
+    }
+
+    @Override
+    public Mono<Void> reset() {
+        return null;
     }
 }

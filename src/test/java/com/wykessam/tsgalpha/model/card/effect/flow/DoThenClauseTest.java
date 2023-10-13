@@ -1,18 +1,16 @@
 package com.wykessam.tsgalpha.model.card.effect.flow;
 
+import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
+import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
 import com.wykessam.tsgalpha.model.card.effect.ResolutionState;
-import com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResult;
-import com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResultState;
-import com.wykessam.tsgalpha.model.game.IGame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
-import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.COMPLETE;
-import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.IN_PROGRESS;
-import static com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResultState.PLAYER_INPUT_REQUIRED;
-import static com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResultState.SUCCESS;
+import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +27,7 @@ class DoThenClauseTest {
     private IFlowClause secondClause;
 
     @Mock
-    private IGame game;
+    private EffectResolutionRequestV1 request;
 
     @Test
     void toStringTest() {
@@ -46,70 +44,99 @@ class DoThenClauseTest {
     }
 
     @Test
-    void bothUnresolvedBothCompleteTest() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
+    void resolveBothUnresolvedBothSuccessful() {
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
+                .firstClause(this.firstClause)
+                .secondClause(this.secondClause)
+                .build();
 
-        when(this.firstClause.getResolutionState()).thenReturn(IN_PROGRESS);
-        when(this.firstClause.resolve(this.game)).thenReturn(this.getSuccessResult());
-        when(this.secondClause.resolve(this.game)).thenReturn(this.getSuccessResult());
+        when(this.firstClause.getResolutionState())
+                .thenReturn(READY);
+        when(this.secondClause.getResolutionState())
+                .thenReturn(READY);
+        when(this.firstClause.resolve(this.request))
+                .thenReturn(Mono.just(EffectResolutionResponseV2.success()));
+        when(this.secondClause.resolve(this.request))
+                .thenReturn(Mono.just(EffectResolutionResponseV2.success()));
 
-        final ResolutionResult result = doThenClause.resolve(this.game);
-
-        assertThat(result.getState()).isEqualTo(SUCCESS);
-        assertThat(doThenClause.getResolutionState()).isEqualTo(COMPLETE);
+        StepVerifier.create(doThenClause.resolve(this.request))
+                .assertNext(response -> {
+                    assertThat(response).isEqualTo(EffectResolutionResponseV2.success());
+                    assertThat(doThenClause.getResolutionState()).isEqualTo(SUCCESS);
+                })
+                .verifyComplete();
     }
 
     @Test
-    void bothUnresolvedFirstIncompleteTest() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
+    void resolveBothUnresolvedFirstUnsuccessful() {
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
+                .firstClause(this.firstClause)
+                .secondClause(this.secondClause)
+                .build();
 
-        when(this.firstClause.getResolutionState()).thenReturn(IN_PROGRESS);
-        when(this.firstClause.resolve(this.game)).thenReturn(this.getInProgressResult());
+        final EffectResolutionResponseV2 firstResponse = EffectResolutionResponseV2.builder()
+                .resolutionState(PLAYER_INPUT_REQUIRED)
+                .build();
 
-        final ResolutionResult result = doThenClause.resolve(this.game);
+        when(this.firstClause.getResolutionState())
+                .thenReturn(READY);
+        when(this.firstClause.resolve(this.request))
+                .thenReturn(Mono.just(firstResponse));
 
-        assertThat(result.getState()).isEqualTo(PLAYER_INPUT_REQUIRED);
-        assertThat(doThenClause.getResolutionState()).isEqualTo(IN_PROGRESS);
+        StepVerifier.create(doThenClause.resolve(this.request))
+                .assertNext(response -> {
+                    assertThat(response).isEqualTo(firstResponse);
+                    assertThat(doThenClause.getResolutionState()).isEqualTo(firstResponse.getResolutionState());
+                })
+                .verifyComplete();
     }
 
     @Test
-    void bothUnresolvedSecondIncompleteTest() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
+    void resolveBothUnresolvedSecondUnsuccessful() {
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
+                .firstClause(this.firstClause)
+                .secondClause(this.secondClause)
+                .build();
 
-        when(this.firstClause.getResolutionState()).thenReturn(IN_PROGRESS);
-        when(this.firstClause.resolve(this.game)).thenReturn(this.getSuccessResult());
-        when(this.firstClause.resolve(this.game)).thenReturn(this.getInProgressResult());
+        final EffectResolutionResponseV2 secondResponse = EffectResolutionResponseV2.builder()
+                .resolutionState(PLAYER_INPUT_REQUIRED)
+                .build();
 
-        final ResolutionResult result = doThenClause.resolve(this.game);
+        when(this.firstClause.getResolutionState())
+                .thenReturn(READY);
+        when(this.secondClause.getResolutionState())
+                .thenReturn(READY);
+        when(this.firstClause.resolve(this.request))
+                .thenReturn(Mono.just(EffectResolutionResponseV2.success()));
+        when(this.secondClause.resolve(this.request))
+                .thenReturn(Mono.just(secondResponse));
 
-        assertThat(result.getState()).isEqualTo(PLAYER_INPUT_REQUIRED);
-        assertThat(doThenClause.getResolutionState()).isEqualTo(IN_PROGRESS);
+        StepVerifier.create(doThenClause.resolve(this.request))
+                .assertNext(response -> {
+                    assertThat(response).isEqualTo(secondResponse);
+                    assertThat(doThenClause.getResolutionState()).isEqualTo(secondResponse.getResolutionState());
+                })
+                .verifyComplete();
     }
 
     @Test
-    void firstResolvedSecondCompleteTest() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
+    void resolveBothResolved() {
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
+                .firstClause(this.firstClause)
+                .secondClause(this.secondClause)
+                .build();
 
-        when(this.firstClause.getResolutionState()).thenReturn(COMPLETE);
-        when(this.secondClause.resolve(this.game)).thenReturn(this.getSuccessResult());
+        when(this.firstClause.getResolutionState())
+                .thenReturn(SUCCESS);
+        when(this.secondClause.getResolutionState())
+                .thenReturn(SUCCESS);
 
-        final ResolutionResult result = doThenClause.resolve(this.game);
-
-        assertThat(result.getState()).isEqualTo(SUCCESS);
-        assertThat(doThenClause.getResolutionState()).isEqualTo(COMPLETE);
-    }
-
-    @Test
-    void firstResolvedSecondIncompleteTest() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
-
-        when(this.firstClause.getResolutionState()).thenReturn(COMPLETE);
-        when(this.secondClause.resolve(this.game)).thenReturn(this.getInProgressResult());
-
-        final ResolutionResult result = doThenClause.resolve(this.game);
-
-        assertThat(result.getState()).isEqualTo(PLAYER_INPUT_REQUIRED);
-        assertThat(doThenClause.getResolutionState()).isEqualTo(IN_PROGRESS);
+        StepVerifier.create(doThenClause.resolve(this.request))
+                .assertNext(response -> {
+                    assertThat(response).isEqualTo(EffectResolutionResponseV2.success());
+                    assertThat(doThenClause.getResolutionState()).isEqualTo(SUCCESS);
+                })
+                .verifyComplete();
     }
 
     private DoThenClause<IFlowClause, IFlowClause> getClause() {
@@ -117,18 +144,6 @@ class DoThenClauseTest {
                 .builder()
                 .firstClause(this.firstClause)
                 .secondClause(this.secondClause)
-                .build();
-    }
-
-    private ResolutionResult getSuccessResult() {
-        return ResolutionResult.builder()
-                .state(SUCCESS)
-                .build();
-    }
-
-    private ResolutionResult getInProgressResult() {
-        return ResolutionResult.builder()
-                .state(PLAYER_INPUT_REQUIRED)
                 .build();
     }
 

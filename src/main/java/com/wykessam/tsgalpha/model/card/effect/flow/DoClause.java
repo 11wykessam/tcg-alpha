@@ -1,17 +1,16 @@
 package com.wykessam.tsgalpha.model.card.effect.flow;
 
+import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
+import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
 import com.wykessam.tsgalpha.model.card.effect.ResolutionState;
 import com.wykessam.tsgalpha.model.card.effect.action.IActionClause;
-import com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResult;
-import com.wykessam.tsgalpha.model.game.IGame;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotNull;
 
-import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.IN_PROGRESS;
 import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.READY;
 
 /**
@@ -38,21 +37,7 @@ public class DoClause<T extends IActionClause> implements IFlowClause {
     }
 
     /**
-     * Resolve the clause.
-     * Resolve the action inside the clause.
-     * @param game {@link IGame}.
-     * @return {@link ResolutionResult}.
-     */
-    @Override
-    public ResolutionResult resolve(final IGame game) {
-        this.resolutionState = IN_PROGRESS;
-        final ResolutionResult result = this.action.resolve(game);
-        this.resolutionState = this.action.getResolutionState();
-        return result;
-    }
-
-    /**
-     * Get the current state of this clause's resolution.
+     * Get the current state of the clause's resolution.
      * @return {@link ResolutionState}.
      */
     @Override
@@ -62,11 +47,27 @@ public class DoClause<T extends IActionClause> implements IFlowClause {
     }
 
     /**
-     * Reset the clause to the ready state.
+     * Resolve the clause.
+     * Resolve the action clause.
+     * @param request {@link EffectResolutionRequestV1}.
+     * @return {@link EffectResolutionResponseV2}.
      */
     @Override
-    public void reset() {
-        this.action.reset();
+    public Mono<EffectResolutionResponseV2> resolve(final EffectResolutionRequestV1 request) {
         this.resolutionState = READY;
+        return this.action.resolve(request)
+                .doOnNext(response -> {
+                    this.resolutionState = response.getResolutionState();
+                });
+    }
+
+    /**
+     * Reset the clause to the ready state.
+     * @return {@link Void}.
+     */
+    @Override
+    public Mono<Void> reset() {
+        this.resolutionState = READY;
+        return this.action.reset();
     }
 }

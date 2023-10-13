@@ -1,8 +1,7 @@
 package com.wykessam.tsgalpha.model.card.effect.flow;
 
 import com.wykessam.tsgalpha.model.card.effect.IClause;
-import com.wykessam.tsgalpha.model.card.effect.action.result.ResolutionResult;
-import com.wykessam.tsgalpha.model.game.IGame;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Samuel Wykes.
