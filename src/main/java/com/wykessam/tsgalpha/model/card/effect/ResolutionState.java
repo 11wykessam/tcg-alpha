@@ -1,8 +1,5 @@
 package com.wykessam.tsgalpha.model.card.effect;
 
-import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
-import reactor.core.publisher.Mono;
-
 /**
  * @author Samuel Wykes.
  * Represents the state of an effect or clause of an effect.
@@ -10,6 +7,6 @@ import reactor.core.publisher.Mono;
 public enum ResolutionState {
 
     READY,
-    SUCCESS,
+    RESOLVED,
     PLAYER_INPUT_REQUIRED;
 }

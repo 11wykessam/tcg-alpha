@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.constraints.NotNull;
 
 import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.READY;
-import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.SUCCESS;
+import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.RESOLVED;
 
 /**
  * @author Samuel Wykes.
@@ -62,15 +62,16 @@ public class DoThenClause<T extends IFlowClause, U extends IFlowClause> implemen
     public Mono<EffectResolutionResponseV2> resolve(final EffectResolutionRequestV1 request) {
         return resolveSubClause(request, this.firstClause)
                 .flatMap(response ->
-                        response.getResolutionState().equals(SUCCESS)
+                        response.getResolutionState().equals(RESOLVED)
                                 ? resolveSubClause(request, this.secondClause)
                                 : Mono.just(response)
-                );
+                )
+                .doOnNext(response -> this.resolutionState = response.getResolutionState());
     }
 
     private static Mono<EffectResolutionResponseV2> resolveSubClause(
             final EffectResolutionRequestV1 request, final IFlowClause clause) {
-        return clause.getResolutionState().equals(SUCCESS)
+        return clause.getResolutionState().equals(RESOLVED)
                 ? Mono.just(EffectResolutionResponseV2.success())
                 : clause.resolve(request);
     }

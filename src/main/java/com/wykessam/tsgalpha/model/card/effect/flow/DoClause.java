@@ -56,9 +56,7 @@ public class DoClause<T extends IActionClause> implements IFlowClause {
     public Mono<EffectResolutionResponseV2> resolve(final EffectResolutionRequestV1 request) {
         this.resolutionState = READY;
         return this.action.resolve(request)
-                .doOnNext(response -> {
-                    this.resolutionState = response.getResolutionState();
-                });
+                .doOnNext(response -> this.resolutionState = response.getResolutionState());
     }
 
     /**

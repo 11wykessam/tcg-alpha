@@ -2,7 +2,6 @@ package com.wykessam.tsgalpha.model.card.effect.flow;
 
 import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
 import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
-import com.wykessam.tsgalpha.model.card.effect.ResolutionState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -61,8 +60,9 @@ class DoThenClauseTest {
 
         StepVerifier.create(doThenClause.resolve(this.request))
                 .assertNext(response -> {
+                    assertThat(response.hasError()).isFalse();
                     assertThat(response).isEqualTo(EffectResolutionResponseV2.success());
-                    assertThat(doThenClause.getResolutionState()).isEqualTo(SUCCESS);
+                    assertThat(doThenClause.getResolutionState()).isEqualTo(RESOLVED);
                 })
                 .verifyComplete();
     }
@@ -85,6 +85,7 @@ class DoThenClauseTest {
 
         StepVerifier.create(doThenClause.resolve(this.request))
                 .assertNext(response -> {
+                    assertThat(response.hasError()).isFalse();
                     assertThat(response).isEqualTo(firstResponse);
                     assertThat(doThenClause.getResolutionState()).isEqualTo(firstResponse.getResolutionState());
                 })
@@ -113,6 +114,7 @@ class DoThenClauseTest {
 
         StepVerifier.create(doThenClause.resolve(this.request))
                 .assertNext(response -> {
+                    assertThat(response.hasError()).isFalse();
                     assertThat(response).isEqualTo(secondResponse);
                     assertThat(doThenClause.getResolutionState()).isEqualTo(secondResponse.getResolutionState());
                 })
@@ -127,14 +129,15 @@ class DoThenClauseTest {
                 .build();
 
         when(this.firstClause.getResolutionState())
-                .thenReturn(SUCCESS);
+                .thenReturn(RESOLVED);
         when(this.secondClause.getResolutionState())
-                .thenReturn(SUCCESS);
+                .thenReturn(RESOLVED);
 
         StepVerifier.create(doThenClause.resolve(this.request))
                 .assertNext(response -> {
+                    assertThat(response.hasError()).isFalse();
                     assertThat(response).isEqualTo(EffectResolutionResponseV2.success());
-                    assertThat(doThenClause.getResolutionState()).isEqualTo(SUCCESS);
+                    assertThat(doThenClause.getResolutionState()).isEqualTo(RESOLVED);
                 })
                 .verifyComplete();
     }
