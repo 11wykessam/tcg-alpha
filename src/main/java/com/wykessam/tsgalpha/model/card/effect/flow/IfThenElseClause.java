@@ -19,7 +19,7 @@ import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.READY;
 @Getter
 @Builder
 public class IfThenElseClause<T extends IConditionalClause, U extends IFlowClause, V extends IFlowClause>
-        implements IFlowClause{
+        implements IFlowClause {
 
     @NonNull
     @NotNull
@@ -47,18 +47,43 @@ public class IfThenElseClause<T extends IConditionalClause, U extends IFlowClaus
         );
     }
 
+    /**
+     * Get the current state of the clause's resolution.
+     * @return {@link ResolutionState}.
+     */
     @Override
+    @NonNull
     public ResolutionState getResolutionState() {
         return this.resolutionState;
     }
 
+    /**
+     * Resolve the clause.
+     * Resolve the condition.
+     * If the condition returns true, resolve the 'then' clause.
+     * Otherwise, resolve the 'else' clause.
+     *
+     * @param request {@link EffectResolutionRequestV1}.
+     * @return {@link EffectResolutionResponseV2}.
+     */
     @Override
     public Mono<EffectResolutionResponseV2> resolve(final EffectResolutionRequestV1 request) {
-        return null;
+        return this.condition.resolve(request)
+                .flatMap(conditionResult -> conditionResult
+                        ? this.thenClause.resolve(request)
+                        : this.elseClause.resolve(request))
+                .doOnNext(response -> this.resolutionState = response.getResolutionState());
     }
 
+    /**
+     * Reset the clause to the ready state.
+     *
+     * @return {@link Void}.
+     */
     @Override
     public Mono<Void> reset() {
-        return null;
+        this.resolutionState = READY;
+        return this.thenClause.reset()
+                .then(this.elseClause.reset());
     }
 }

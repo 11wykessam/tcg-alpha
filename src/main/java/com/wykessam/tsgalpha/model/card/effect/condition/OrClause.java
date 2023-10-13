@@ -1,8 +1,9 @@
 package com.wykessam.tsgalpha.model.card.effect.condition;
 
-import com.wykessam.tsgalpha.model.game.IGame;
+import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
 import lombok.Builder;
 import lombok.Getter;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Samuel Wykes.
@@ -27,12 +28,14 @@ public class OrClause<T extends IConditionalClause, U extends IConditionalClause
 
     /**
      * Resolves the condition based on the state of the game.
-     * @param game {@link IGame}.
+     * @param request {@link EffectResolutionRequestV1}.
      * @return {@link Boolean}.
      */
     @Override
-    public Boolean resolve(IGame game) {
-        return this.firstCondition.resolve(game) || this.secondCondition.resolve(game);
+    public Mono<Boolean> resolve(final EffectResolutionRequestV1 request) {
+        return this.firstCondition.resolve(request)
+                .concatWith(this.secondCondition.resolve(request))
+                .any(bool -> bool);
     }
 
 }

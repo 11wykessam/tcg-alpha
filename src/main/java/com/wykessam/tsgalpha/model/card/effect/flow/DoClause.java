@@ -38,6 +38,7 @@ public class DoClause<T extends IActionClause> implements IFlowClause {
 
     /**
      * Get the current state of the clause's resolution.
+     *
      * @return {@link ResolutionState}.
      */
     @Override
@@ -49,6 +50,7 @@ public class DoClause<T extends IActionClause> implements IFlowClause {
     /**
      * Resolve the clause.
      * Resolve the action clause.
+     *
      * @param request {@link EffectResolutionRequestV1}.
      * @return {@link EffectResolutionResponseV2}.
      */
@@ -61,6 +63,7 @@ public class DoClause<T extends IActionClause> implements IFlowClause {
 
     /**
      * Reset the clause to the ready state.
+     *
      * @return {@link Void}.
      */
     @Override

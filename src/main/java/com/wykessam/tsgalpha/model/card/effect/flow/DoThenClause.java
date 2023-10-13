@@ -55,6 +55,7 @@ public class DoThenClause<T extends IFlowClause, U extends IFlowClause> implemen
     /**
      * Resolve the effect.
      * Resolve the first effect, if successful, resolve the second.
+     *
      * @param request {@link EffectResolutionRequestV1}.
      * @return {@link EffectResolutionResponseV2}.
      */
@@ -78,6 +79,7 @@ public class DoThenClause<T extends IFlowClause, U extends IFlowClause> implemen
 
     /**
      * Reset the clause to the ready state.
+     *
      * @return {@link Void}.
      */
     @Override

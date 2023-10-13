@@ -1,7 +1,7 @@
 package com.wykessam.tsgalpha.model.card.effect.condition;
 
-import com.wykessam.tsgalpha.model.card.effect.IClause;
-import com.wykessam.tsgalpha.model.game.IGame;
+import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Samuel Wykes.
@@ -11,9 +11,9 @@ public interface IConditionalClause {
 
     /**
      * Resolve the condition based on the current state of the game.
-     * @param game {@link IGame}.
+     * @param request {@link EffectResolutionRequestV1}.
      * @return {@link Boolean}.
      */
-    Boolean resolve(final IGame game);
+    Mono<Boolean> resolve(final EffectResolutionRequestV1 request);
 
 }
