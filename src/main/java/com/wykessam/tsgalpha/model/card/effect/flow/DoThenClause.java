@@ -76,8 +76,14 @@ public class DoThenClause<T extends IFlowClause, U extends IFlowClause> implemen
                 : clause.resolve(request);
     }
 
+    /**
+     * Reset the clause to the ready state.
+     * @return {@link Void}.
+     */
     @Override
     public Mono<Void> reset() {
-        return null;
+        this.resolutionState = READY;
+        return this.firstClause.reset()
+                .then(this.secondClause.reset());
     }
 }

@@ -2,6 +2,7 @@ package com.wykessam.tsgalpha.model.card.effect.flow;
 
 import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
 import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
+import com.wykessam.tsgalpha.model.card.effect.action.IActionClause;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -44,10 +45,7 @@ class DoThenClauseTest {
 
     @Test
     void resolveBothUnresolvedBothSuccessful() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
-                .firstClause(this.firstClause)
-                .secondClause(this.secondClause)
-                .build();
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
 
         when(this.firstClause.getResolutionState())
                 .thenReturn(READY);
@@ -69,10 +67,7 @@ class DoThenClauseTest {
 
     @Test
     void resolveBothUnresolvedFirstUnsuccessful() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
-                .firstClause(this.firstClause)
-                .secondClause(this.secondClause)
-                .build();
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
 
         final EffectResolutionResponseV2 firstResponse = EffectResolutionResponseV2.builder()
                 .resolutionState(PLAYER_INPUT_REQUIRED)
@@ -94,10 +89,7 @@ class DoThenClauseTest {
 
     @Test
     void resolveBothUnresolvedSecondUnsuccessful() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
-                .firstClause(this.firstClause)
-                .secondClause(this.secondClause)
-                .build();
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
 
         final EffectResolutionResponseV2 secondResponse = EffectResolutionResponseV2.builder()
                 .resolutionState(PLAYER_INPUT_REQUIRED)
@@ -123,10 +115,7 @@ class DoThenClauseTest {
 
     @Test
     void resolveBothResolved() {
-        final DoThenClause<IFlowClause, IFlowClause> doThenClause = DoThenClause.builder()
-                .firstClause(this.firstClause)
-                .secondClause(this.secondClause)
-                .build();
+        final DoThenClause<IFlowClause, IFlowClause> doThenClause = this.getClause();
 
         when(this.firstClause.getResolutionState())
                 .thenReturn(RESOLVED);
@@ -138,6 +127,29 @@ class DoThenClauseTest {
                     assertThat(response.hasError()).isFalse();
                     assertThat(response).isEqualTo(EffectResolutionResponseV2.success());
                     assertThat(doThenClause.getResolutionState()).isEqualTo(RESOLVED);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void reset() {
+        final DoThenClause<IFlowClause, IFlowClause> doClause = this.getClause();
+
+        when(this.firstClause.getResolutionState())
+                .thenReturn(RESOLVED);
+        when(this.secondClause.getResolutionState())
+                .thenReturn(RESOLVED);
+        when(this.firstClause.reset())
+                .thenReturn(Mono.empty());
+        when(this.secondClause.reset())
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(
+                        doClause.resolve(this.request)
+                                .then(doClause.reset())
+                                .then(Mono.just(doClause.getResolutionState())))
+                .assertNext(state -> {
+                    assertThat(state).isEqualTo(READY);
                 })
                 .verifyComplete();
     }

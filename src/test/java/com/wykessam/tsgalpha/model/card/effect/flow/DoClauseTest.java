@@ -10,8 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.PLAYER_INPUT_REQUIRED;
-import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.RESOLVED;
+import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -44,9 +43,7 @@ class DoClauseTest {
 
     @Test
     void subClauseSuccessful() {
-        final DoClause<IActionClause> doClause = DoClause.builder()
-                .action(this.subClause)
-                .build();
+        final DoClause<IActionClause> doClause = this.getClause();
 
         when(this.subClause.resolve(this.request))
                 .thenReturn(Mono.just(EffectResolutionResponseV2.success()));
@@ -62,9 +59,7 @@ class DoClauseTest {
 
     @Test
     void subClauseUnsuccessful() {
-        final DoClause<IActionClause> doClause = DoClause.builder()
-                .action(this.subClause)
-                .build();
+        final DoClause<IActionClause> doClause = this.getClause();
 
         final EffectResolutionResponseV2 subClauseResponse = EffectResolutionResponseV2.builder()
                 .resolutionState(PLAYER_INPUT_REQUIRED)
@@ -80,6 +75,30 @@ class DoClauseTest {
                     assertThat(doClause.getResolutionState()).isEqualTo(subClauseResponse.getResolutionState());
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void reset() {
+        final DoClause<IActionClause> doClause = this.getClause();
+
+        when(this.subClause.resolve(this.request))
+                .thenReturn(Mono.just(EffectResolutionResponseV2.success()));
+        when(this.subClause.reset())
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(doClause.resolve(this.request)
+                .then(doClause.reset())
+                .then(Mono.just(doClause.getResolutionState())))
+                .assertNext(state -> {
+                    assertThat(state).isEqualTo(READY);
+                })
+                .verifyComplete();
+    }
+
+    private DoClause<IActionClause> getClause() {
+        return DoClause.builder()
+                .action(this.subClause)
+                .build();
     }
 
 }

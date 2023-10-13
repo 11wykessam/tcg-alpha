@@ -53,7 +53,7 @@ public class IfThenElseClause<T extends IConditionalClause, U extends IFlowClaus
     }
 
     @Override
-    public Mono<EffectResolutionResponseV2> resolve(EffectResolutionRequestV1 request) {
+    public Mono<EffectResolutionResponseV2> resolve(final EffectResolutionRequestV1 request) {
         return null;
     }
 
