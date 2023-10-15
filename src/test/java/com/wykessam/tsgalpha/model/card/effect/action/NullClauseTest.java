@@ -41,6 +41,12 @@ class NullClauseTest {
                 .isEqualTo(RESOLVED);
     }
 
+    @Test
+    void resetTest() {
+        StepVerifier.create(getClause().reset())
+                .verifyComplete();
+    }
+
     private static NullClause getClause() {
         return new NullClause();
     }
