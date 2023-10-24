@@ -5,4 +5,7 @@ package com.wykessam.tsgalpha.model.game;
  * Represents a singular game in the TCG.
  */
 public interface IGame {
+
+
+
 }
