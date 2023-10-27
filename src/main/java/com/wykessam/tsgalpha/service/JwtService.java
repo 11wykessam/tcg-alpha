@@ -3,13 +3,17 @@ package com.wykessam.tsgalpha.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -20,12 +24,14 @@ import java.util.stream.Collectors;
  *
  * Service responsible for handling creation and validation of JWTs.
  */
+@Service
+@Slf4j
 public class JwtService {
 
     private static final String ROLE_HEADER = "role";
     private static final Long EXPIRATION_MILLIS = 1000L * 30L;
 
-    @Value("${jwt.token.key")
+    @Value("${jwt.token.key}")
     private String jwtTokenKey;
 
     public Mono<String> generateToken(final UserDetails userDetails) {
@@ -52,8 +58,9 @@ public class JwtService {
     }
 
     private SecretKey secretKey() {
-        return new SecretKeySpec(
-                Base64.getDecoder().decode(jwtTokenKey), 0, jwtTokenKey.length(), "AES");
+        final String keyString = Base64.getEncoder()
+                .encodeToString(jwtTokenKey.getBytes());
+        return Keys.hmacShaKeyFor(keyString.getBytes(StandardCharsets.UTF_8));
     }
 
 }

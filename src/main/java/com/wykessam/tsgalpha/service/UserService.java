@@ -40,6 +40,15 @@ public class UserService {
                 .doOnNext(user -> log.info(user.toString()));
     }
 
+    /**
+     * Get a user by their username.
+     * @param username {@link String}.
+     * @return {@link User}.
+     */
+    public Mono<User> getByUsername(final String username) {
+        return userDBRepository.findFirstByUsername(username);
+    }
+
     @PostConstruct
     public void init() {
         userDBRepository
