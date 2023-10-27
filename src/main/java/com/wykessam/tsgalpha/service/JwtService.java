@@ -3,30 +3,26 @@ package com.wykessam.tsgalpha.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.springframework.security.core.authority.AuthorityUtils.*;
+import static org.springframework.security.core.authority.AuthorityUtils.NO_AUTHORITIES;
+import static org.springframework.security.core.authority.AuthorityUtils.commaSeparatedStringToAuthorityList;
 
 /**
  * @author Samuel Wykes.
@@ -34,7 +30,6 @@ import static org.springframework.security.core.authority.AuthorityUtils.*;
  * Service responsible for handling creation and validation of JWTs.
  */
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class JwtService {
 
@@ -67,10 +62,7 @@ public class JwtService {
      */
     public Mono<Authentication> authenticateToken(final String token) {
         return this.extractClaims(token)
-                .doOnNext(claims -> log.info(claims.toString()))
                 .switchIfEmpty(Mono.error(new JwtException("Invalid token")))
-                .filter(this::isTokenExpired)
-                .switchIfEmpty(Mono.error(new JwtException("Token expired")))
                 .map(claims -> {
                     final Collection<? extends GrantedAuthority> authorities = this.extractAuthorities(claims);
                     return new UsernamePasswordAuthenticationToken(
@@ -79,10 +71,6 @@ public class JwtService {
                             authorities
                     );
                 });
-    }
-
-    private boolean isTokenExpired(final Claims claims) {
-        return claims.getExpiration().after(new Date());
     }
 
     private Collection<? extends GrantedAuthority> extractAuthorities(final Claims claims) {
@@ -102,7 +90,7 @@ public class JwtService {
 
     private SecretKey secretKey() {
         final String keyString = Base64.getEncoder()
-                .encodeToString(jwtTokenKey.getBytes());
+                .encodeToString(this.jwtTokenKey.getBytes());
         return Keys.hmacShaKeyFor(keyString.getBytes(StandardCharsets.UTF_8));
     }
 

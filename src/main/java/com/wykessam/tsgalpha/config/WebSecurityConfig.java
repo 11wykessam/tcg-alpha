@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                         .pathMatchers("/auth/**").permitAll()
                         .anyExchange().authenticated()
                 )
-                .addFilterAfter(new JwtAuthenticationFilter(jwtService), HTTP_BASIC);
+                .addFilterAt(new JwtAuthenticationFilter(jwtService), HTTP_BASIC);
         return http.build();
     }
 
