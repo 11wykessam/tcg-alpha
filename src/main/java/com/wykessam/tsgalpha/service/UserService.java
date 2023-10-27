@@ -1,7 +1,6 @@
 package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.persistence.entity.User;
-import com.wykessam.tsgalpha.persistence.entity.UserRole;
 import com.wykessam.tsgalpha.persistence.repository.UserDBRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -36,7 +33,7 @@ public class UserService {
      */
     @Bean
     public ReactiveUserDetailsService userDetailsService() {
-        return username -> userDBRepository.findFirstByUsername(username).cast(UserDetails.class)
+        return username -> this.userDBRepository.findFirstByUsername(username).cast(UserDetails.class)
                 .doOnNext(user -> log.info(user.toString()));
     }
 
@@ -46,16 +43,16 @@ public class UserService {
      * @return {@link User}.
      */
     public Mono<User> getByUsername(final String username) {
-        return userDBRepository.findFirstByUsername(username);
+        return this.userDBRepository.findFirstByUsername(username);
     }
 
     @PostConstruct
     public void init() {
-        userDBRepository
+        this.userDBRepository
                 .deleteAll()
-                .then(userDBRepository.save(User.builder()
+                .then(this.userDBRepository.save(User.builder()
                                 .username("user")
-                                .password(passwordEncoder.encode("password"))
+                        .password(this.passwordEncoder.encode("password"))
                                 .role(ADMIN)
                                 .build()))
                 .subscribe(result -> log.info("User saved: " + result));

@@ -2,7 +2,6 @@ package com.wykessam.tsgalpha.model.card.effect.flow;
 
 import com.wykessam.tsgalpha.api.request.EffectResolutionRequestV1;
 import com.wykessam.tsgalpha.api.response.EffectResolutionResponseV2;
-import com.wykessam.tsgalpha.model.card.effect.action.IActionClause;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

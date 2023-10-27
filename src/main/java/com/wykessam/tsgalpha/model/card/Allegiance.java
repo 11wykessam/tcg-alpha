@@ -6,7 +6,8 @@ package com.wykessam.tsgalpha.model.card;
  */
 public enum Allegiance {
 
-    EMPIRE_OF_FIRE("Empire of Fire");
+    EMPIRE_OF_FIRE("Empire of Fire"),
+    SHADOW_LEGION("Shadow Legion");
 
     private final String name;
 

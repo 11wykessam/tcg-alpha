@@ -1,7 +1,6 @@
 package com.wykessam.tsgalpha.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -13,9 +12,10 @@ import java.time.Duration;
 
 /**
  * @author Samuel Wykes.
+ * Configuration for Redis.
  */
 @Configuration
-public class RedisConfig extends CachingConfigurerSupport{
+public class RedisConfig {
 
     @Value(value="${spring.redis.host}")
     private String host;
@@ -28,14 +28,14 @@ public class RedisConfig extends CachingConfigurerSupport{
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(Integer.valueOf(port));
+        final RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(this.host);
+        redisStandaloneConfiguration.setPort(Integer.parseInt(this.port));
 
-        JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
-        jedisClientConfiguration.connectTimeout(Duration.ofSeconds(Integer.valueOf(timeout)));// connection timeout
+        final JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
+        jedisClientConfiguration.connectTimeout(Duration.ofSeconds(Integer.valueOf(this.timeout)));// connection timeout
 
-        JedisConnectionFactory jedisConFactory = new JedisConnectionFactory(redisStandaloneConfiguration,
+        final JedisConnectionFactory jedisConFactory = new JedisConnectionFactory(redisStandaloneConfiguration,
                 jedisClientConfiguration.build());
 
         return jedisConFactory;
@@ -43,7 +43,7 @@ public class RedisConfig extends CachingConfigurerSupport{
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        final RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(this.jedisConnectionFactory());
         return template;
     }

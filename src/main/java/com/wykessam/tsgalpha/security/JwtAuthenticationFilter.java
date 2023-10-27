@@ -4,7 +4,6 @@ import com.wykessam.tsgalpha.service.JwtService;
 import io.jsonwebtoken.JwtException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -12,8 +11,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

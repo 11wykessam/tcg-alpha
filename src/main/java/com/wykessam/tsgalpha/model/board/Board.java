@@ -2,9 +2,6 @@ package com.wykessam.tsgalpha.model.board;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author Samuel Wykes.

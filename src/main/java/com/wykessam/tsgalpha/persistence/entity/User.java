@@ -36,7 +36,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override
@@ -61,6 +61,6 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public String toString() {
-        return String.format("username: %s, password: %s, role: %s", username, password, role.name());
+        return String.format("username: %s, password: %s, role: %s", this.username, this.password, this.role.name());
     }
 }

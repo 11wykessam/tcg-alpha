@@ -8,5 +8,5 @@ public enum ResolutionState {
 
     READY,
     RESOLVED,
-    PLAYER_INPUT_REQUIRED;
+    PLAYER_INPUT_REQUIRED
 }

@@ -19,31 +19,31 @@ public class RedisDemoController {
     final UserDBRepository repository;
 
     @Autowired
-    public RedisDemoController(UserDBRepository repository) {
+    public RedisDemoController(final UserDBRepository repository) {
         this.repository = repository;
     }
 
     @PostMapping("/user")
     @CachePut(value = "user", key = "#user.id")
-    public Mono<User> addNewUser(@RequestBody User user) {
-        return repository.save(user);
+    public Mono<User> addNewUser(@RequestBody final User user) {
+        return this.repository.save(user);
     }
 
     @GetMapping("/getUserById")
     @Cacheable(value = "user", key = "#id")
-    public Mono<User> getUserById(@RequestParam String id){
-        return  repository.findById(id);
+    public Mono<User> getUserById(@RequestParam final String id) {
+        return this.repository.findById(id);
     }
 
     @PostMapping("/update")
     @CachePut(value = "user", key = "#user.id")
-    public Mono<User> updateUser(@RequestBody User user) {
-        return repository.save(user);
+    public Mono<User> updateUser(@RequestBody final User user) {
+        return this.repository.save(user);
     }
 
     @GetMapping("/delete")
     @CacheEvict(value = "user", key = "#id")
-    public Mono<Void> deleteUserById(@RequestParam String id) {
-        return repository.deleteById(id);
+    public Mono<Void> deleteUserById(@RequestParam final String id) {
+        return this.repository.deleteById(id);
     }
 }

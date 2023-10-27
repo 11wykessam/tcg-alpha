@@ -1,7 +1,5 @@
 package com.wykessam.tsgalpha.model.card;
 
-import com.wykessam.tsgalpha.model.card.effect.IEffect;
-
 /**
  * @author Samuel Wykes.
  * Represents a disruption card in the TCG.

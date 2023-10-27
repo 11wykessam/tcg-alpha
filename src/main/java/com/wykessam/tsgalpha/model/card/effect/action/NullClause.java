@@ -9,7 +9,7 @@ import static com.wykessam.tsgalpha.model.card.effect.ResolutionState.RESOLVED;
 
 /**
  * @author Samuel Wykes.
- * Represents the terminating clause in an effect (i.e does nothing).
+ * Represents the terminating clause in an effect (i.e. does nothing).
  */
 public class NullClause implements IActionClause {
 

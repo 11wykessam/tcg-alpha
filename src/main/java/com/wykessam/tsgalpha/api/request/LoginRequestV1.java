@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 /**
  * @author Samuel Wykes.
- *
  * Represents a request to login.
  */
 @Getter

@@ -1,8 +1,6 @@
 package com.wykessam.tsgalpha.api.response;
 
 import com.wykessam.tsgalpha.model.exception.ErrorInfo;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;

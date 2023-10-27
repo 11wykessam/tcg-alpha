@@ -6,7 +6,8 @@ package com.wykessam.tsgalpha.model.card;
  */
 public enum CreatureType {
 
-    DRAGON("Dragon");
+    DRAGON("Dragon"),
+    ORC("Orc");
 
     private final String name;
 

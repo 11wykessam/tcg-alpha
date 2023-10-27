@@ -1,7 +1,6 @@
 package com.wykessam.tsgalpha.model.card.effect.flow;
 
 import com.wykessam.tsgalpha.model.card.effect.IClause;
-import reactor.core.publisher.Mono;
 
 /**
  * @author Samuel Wykes.
