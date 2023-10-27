@@ -38,10 +38,8 @@ public class JwtAuthenticationFilter implements WebFilter {
     @Override
     @NonNull
     public Mono<Void> filter(@NonNull final ServerWebExchange exchange, @NonNull final WebFilterChain chain) {
-        final AtomicBoolean filterChainExecuted = new AtomicBoolean(false);
         return this.extractToken(exchange.getRequest())
                 .flatMap(this.jwtService::authenticateToken)
-                .doOnNext(authentication -> filterChainExecuted.set(true))
                 .flatMap(authentication -> chain.filter(exchange)
                         .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)))
                 .onErrorResume(error -> chain.filter(exchange));

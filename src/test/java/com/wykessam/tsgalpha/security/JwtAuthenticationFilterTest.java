@@ -60,8 +60,7 @@ class JwtAuthenticationFilterTest {
             @Mock final ServerWebExchange exchange,
             @Mock final WebFilterChain filterChain,
             @Mock final ServerHttpRequest request,
-            @Mock final HttpHeaders httpHeaders,
-            @Mock final Authentication authentication
+            @Mock final HttpHeaders httpHeaders
     ) {
         when(exchange.getRequest()).thenReturn(request);
         when(request.getHeaders()).thenReturn(httpHeaders);

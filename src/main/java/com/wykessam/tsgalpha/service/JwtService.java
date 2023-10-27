@@ -39,7 +39,7 @@ import static org.springframework.security.core.authority.AuthorityUtils.*;
 public class JwtService {
 
     private static final String ROLE_HEADER = "role";
-    private static final Long EXPIRATION_MILLIS = 1000L * 30L;
+    private static final Long EXPIRATION_MILLIS = 1000L * 60L * 60L;
 
     @Value("${jwt.token.key}")
     private String jwtTokenKey;
@@ -67,6 +67,7 @@ public class JwtService {
      */
     public Mono<Authentication> authenticateToken(final String token) {
         return this.extractClaims(token)
+                .doOnNext(claims -> log.info(claims.toString()))
                 .switchIfEmpty(Mono.error(new JwtException("Invalid token")))
                 .filter(this::isTokenExpired)
                 .switchIfEmpty(Mono.error(new JwtException("Token expired")))
@@ -81,7 +82,7 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(final Claims claims) {
-        return claims.getExpiration().before(new Date());
+        return claims.getExpiration().after(new Date());
     }
 
     private Collection<? extends GrantedAuthority> extractAuthorities(final Claims claims) {
