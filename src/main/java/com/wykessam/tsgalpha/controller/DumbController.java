@@ -14,7 +14,7 @@ public class DumbController {
 
     @GetMapping("/message")
     public Mono<String> getMessage() {
-        return Mono.just("HELLO WORLD!");
+        return Mono.just("HELLO WORLD");
     }
 
 }
