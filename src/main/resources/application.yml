@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+  data:
+    mongodb:
+      database: users_db
+      server: localhost
+      port: 27017
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
+  rsocket:
+    server:
+      port: 6565
+      transport: websocket
+      mapping-path: /rsocket
+
+redis:
+  timeout: 2000
+
+jwt:
+  token:
+    key: sam's silly little key
