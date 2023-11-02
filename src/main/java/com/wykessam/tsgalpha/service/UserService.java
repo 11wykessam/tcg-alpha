@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static com.wykessam.tsgalpha.persistence.entity.UserRole.ADMIN;
+import static com.wykessam.tsgalpha.persistence.entity.UserRole.ROLE_ADMIN;
 
 /**
  * @author Samuel Wykes.
@@ -53,7 +53,7 @@ public class UserService {
                 .then(this.userDBRepository.save(User.builder()
                                 .username("user")
                         .password(this.passwordEncoder.encode("password"))
-                                .role(ADMIN)
+                        .role(ROLE_ADMIN)
                                 .build()))
                 .subscribe(result -> log.info("User saved: " + result));
     }

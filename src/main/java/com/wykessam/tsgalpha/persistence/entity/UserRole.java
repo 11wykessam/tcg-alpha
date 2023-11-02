@@ -5,6 +5,6 @@ package com.wykessam.tsgalpha.persistence.entity;
  * Represents roles given to the users.
  */
 public enum UserRole {
-    ADMIN,
-    USER
+    ROLE_ADMIN,
+    ROLE_USER
 }
