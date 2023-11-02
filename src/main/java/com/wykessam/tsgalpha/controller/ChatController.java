@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Samuel Wykes.
@@ -15,10 +15,10 @@ import reactor.core.publisher.Flux;
 @Slf4j
 public class ChatController {
 
-    @MessageMapping("/sendMessage")
-    public Flux<ChatMessage> sendMessage(@Validated final String message) {
+    @MessageMapping("send.message")
+    public Mono<ChatMessage> sendMessage(@Validated final ChatMessage message) {
         log.info(message.toString());
-        return Flux.just(ChatMessage.builder().message(message).build());
+        return Mono.just(message);
     }
 
 }
