@@ -8,13 +8,7 @@ import org.springframework.security.config.annotation.rsocket.EnableRSocketSecur
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Samuel Wykes.
@@ -27,6 +21,13 @@ public class RSocketSecurityConfiguration {
     @Value("${jwt.token.key}")
     private String jwtTokenKey;
 
+    /**
+     * Configure security for RSocket connections.
+     *
+     * @param rsocket               {@link RSocketSecurity}.
+     * @param authenticationManager {@link ReactiveAuthenticationManager}.
+     * @return {@link PayloadSocketAcceptorInterceptor}.
+     */
     @Bean
     public PayloadSocketAcceptorInterceptor rsocketInterceptor(
             final RSocketSecurity rsocket,
@@ -40,27 +41,14 @@ public class RSocketSecurityConfiguration {
                                 .anyExchange()
                                 .permitAll()
                 )
-                .jwt(jwtSpec -> {
-                    try {
-                        jwtSpec.authenticationManager(authenticationManager);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-
+                .jwt(jwtSpec -> jwtSpec.authenticationManager(authenticationManager));
         return rsocket.build();
     }
 
-    @Bean
-    public ReactiveJwtDecoder reactiveJwtDecoder() throws Exception {
-        Mac mac = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secretKey = new SecretKeySpec(jwtTokenKey.getBytes(), mac.getAlgorithm());
-
-        return NimbusReactiveJwtDecoder.withSecretKey(secretKey)
-                .macAlgorithm(MacAlgorithm.HS256)
-                .build();
-    }
-
+    /**
+     * Determines the password encoder used by the rest of the application.
+     * @return {@link PasswordEncoder}.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

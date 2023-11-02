@@ -33,12 +33,10 @@ public class RedisConfig {
         redisStandaloneConfiguration.setPort(Integer.parseInt(this.port));
 
         final JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
-        jedisClientConfiguration.connectTimeout(Duration.ofSeconds(Integer.valueOf(this.timeout)));// connection timeout
+        jedisClientConfiguration.connectTimeout(Duration.ofSeconds(Integer.parseInt(this.timeout)));// connection timeout
 
-        final JedisConnectionFactory jedisConFactory = new JedisConnectionFactory(redisStandaloneConfiguration,
+        return new JedisConnectionFactory(redisStandaloneConfiguration,
                 jedisClientConfiguration.build());
-
-        return jedisConFactory;
     }
 
     @Bean
