@@ -3,6 +3,7 @@ package com.wykessam.tsgalpha.service;
 import com.wykessam.tsgalpha.api.request.LoginRequestV1;
 import com.wykessam.tsgalpha.api.response.LoginResponseV1;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
  * Service responsible for authenticating users.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -34,7 +36,8 @@ public class AuthService {
                 .map(Authentication::getName)
                 .flatMap(this.userService::getByUsername)
                 .flatMap(this.jwtService::generateToken)
-                .map(token -> LoginResponseV1.builder().token(token).build());
+                .map(token -> LoginResponseV1.builder().token(token).build())
+                .switchIfEmpty(Mono.just(LoginResponseV1.builder().token("Hello World!").build()));
     }
 
 }

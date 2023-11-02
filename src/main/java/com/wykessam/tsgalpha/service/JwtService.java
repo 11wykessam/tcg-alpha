@@ -33,7 +33,7 @@ import static org.springframework.security.core.authority.AuthorityUtils.commaSe
 @RequiredArgsConstructor
 public class JwtService {
 
-    private static final String ROLE_HEADER = "role";
+    private static final String ROLE_HEADER = "scope";
     private static final Long EXPIRATION_MILLIS = 1000L * 60L * 60L;
 
     @Value("${jwt.token.key}")
