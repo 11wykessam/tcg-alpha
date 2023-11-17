@@ -1,6 +1,5 @@
 package com.wykessam.tsgalpha.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -17,9 +16,6 @@ import org.springframework.security.rsocket.core.PayloadSocketAcceptorIntercepto
 @Configuration
 @EnableRSocketSecurity
 public class RSocketSecurityConfiguration {
-
-    @Value("${jwt.token.key}")
-    private String jwtTokenKey;
 
     /**
      * Configure security for RSocket connections.

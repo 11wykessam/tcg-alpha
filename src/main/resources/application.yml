@@ -7,8 +7,7 @@ spring:
   data:
     mongodb:
       database: users_db
-      server: localhost
-      port: 27017
+      uri: mongodb+srv://default:bRxyDvHGcaXgzCH8@tsg-alpha-db.istomwf.mongodb.net/
     redis:
       host: localhost
       port: 6379
@@ -25,4 +24,6 @@ redis:
 
 jwt:
   token:
+    timeout: 1800000
+    refreshTimeout: 604800000
     key: sam's silly little key

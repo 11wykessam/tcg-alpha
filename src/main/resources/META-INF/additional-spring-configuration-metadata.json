@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "spring.data.mongodb.server",
+      "type": "java.lang.String",
+      "description": "Description for spring.data.mongodb.server."
+    }
+  ]
+}

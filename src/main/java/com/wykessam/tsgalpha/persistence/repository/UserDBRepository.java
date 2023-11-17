@@ -11,6 +11,13 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface UserDBRepository extends ReactiveMongoRepository<User, String> {
 
+    /**
+     * Extract user by their username.
+     * This should be unique.
+     *
+     * @param username {@link String}.
+     * @return {@link User}.
+     */
     Mono<User> findFirstByUsername(final String username);
 
 }

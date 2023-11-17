@@ -5,7 +5,6 @@ import com.wykessam.tsgalpha.api.response.LoginResponseV1;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -21,7 +20,6 @@ public class AuthService {
 
     private final JwtService jwtService;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * Perform a login request for a user.
@@ -32,7 +30,21 @@ public class AuthService {
         return this.userService.getByUsername(request.getUsername())
                 .filter(user -> BCrypt.checkpw(request.getPassword(), user.getPassword()))
                 .flatMap(this.jwtService::generateToken)
-                .map(token -> LoginResponseV1.builder().token(token).build());
+                .map(AuthService::success)
+                .switchIfEmpty(Mono.just(failure()));
+    }
+
+    private static LoginResponseV1 success(final String token) {
+        return LoginResponseV1.builder()
+                .token(token)
+                .success(true)
+                .build();
+    }
+
+    private static LoginResponseV1 failure() {
+        return LoginResponseV1.builder()
+                .success(false)
+                .build();
     }
 
 }

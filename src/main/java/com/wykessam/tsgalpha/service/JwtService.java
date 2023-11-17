@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,14 +29,15 @@ import static org.springframework.security.core.authority.AuthorityUtils.commaSe
  * Service responsible for handling creation and validation of JWTs.
  */
 @Service
-@RequiredArgsConstructor
 public class JwtService {
 
     private static final String ROLE_HEADER = "scope";
-    private static final Long EXPIRATION_MILLIS = 1000L * 60L * 60L;
 
     @Value("${jwt.token.key}")
     private String jwtTokenKey;
+
+    @Value("${jwt.token.timeout}")
+    private Long timeout;
 
     /**
      * Generate a JWT based on given user details.
@@ -50,7 +50,7 @@ public class JwtService {
                 .claims(userDetails.getAuthorities().stream()
                         .collect(Collectors.toMap(authority -> ROLE_HEADER, GrantedAuthority::getAuthority)))
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_MILLIS))
+                .expiration(new Date(System.currentTimeMillis() + this.timeout))
                 .signWith(this.secretKey())
                 .compact());
     }
