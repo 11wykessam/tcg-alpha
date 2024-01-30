@@ -21,6 +21,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @RequiredArgsConstructor
 public class AuthService {
 
+    public static final String INVALID_CREDENTIALS = "Invalid Credentials";
+
     private final JwtService jwtService;
     private final UserService userService;
 
@@ -44,7 +46,7 @@ public class AuthService {
     }
 
     private static LoginResponseV1 failure() {
-        return ErrorUtil.buildError("Invalid Credentials", UNAUTHORIZED,
+        return ErrorUtil.buildError(INVALID_CREDENTIALS, UNAUTHORIZED,
                 LoginResponseV1.builder()
                         .build()
         );
