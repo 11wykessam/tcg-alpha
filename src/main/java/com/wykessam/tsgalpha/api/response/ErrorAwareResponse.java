@@ -3,6 +3,7 @@ package com.wykessam.tsgalpha.api.response;
 import com.wykessam.tsgalpha.model.exception.ErrorInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -10,11 +11,12 @@ import lombok.experimental.SuperBuilder;
  * Represents a response which can contain error information.
  */
 @Getter
+@Setter
 @SuperBuilder
 @EqualsAndHashCode
 public abstract class ErrorAwareResponse {
 
-    private final ErrorInfo errorInfo;
+    private ErrorInfo errorInfo;
 
     /**
      * Check if response has an error.

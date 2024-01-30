@@ -2,11 +2,14 @@ package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.api.request.LoginRequestV1;
 import com.wykessam.tsgalpha.api.response.LoginResponseV1;
+import com.wykessam.tsgalpha.util.ErrorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
  * @author Samuel Wykes.
@@ -37,14 +40,14 @@ public class AuthService {
     private static LoginResponseV1 success(final String token) {
         return LoginResponseV1.builder()
                 .token(token)
-                .success(true)
                 .build();
     }
 
     private static LoginResponseV1 failure() {
-        return LoginResponseV1.builder()
-                .success(false)
-                .build();
+        return ErrorUtil.buildError("Invalid Credentials", UNAUTHORIZED,
+                LoginResponseV1.builder()
+                        .build()
+        );
     }
 
 }

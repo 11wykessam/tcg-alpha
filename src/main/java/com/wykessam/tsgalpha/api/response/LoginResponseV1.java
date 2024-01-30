@@ -1,22 +1,20 @@
 package com.wykessam.tsgalpha.api.response;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * @author Samuel Wykes.
  * Represents the response for an attempt to login.
  */
 @Getter
-@Builder
-public class LoginResponseV1 {
+@SuperBuilder
+@Jacksonized
+public class LoginResponseV1 extends ErrorAwareResponse {
 
     private final String token;
 
     private final String refreshToken;
-
-    @NonNull
-    private final Boolean success;
 
 }
