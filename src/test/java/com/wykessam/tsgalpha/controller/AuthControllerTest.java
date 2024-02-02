@@ -15,6 +15,7 @@ import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author Samuel Wykes.
@@ -37,7 +38,10 @@ class AuthControllerTest {
                 .thenReturn(Mono.just(expected));
 
         StepVerifier.create(this.authController.login(request))
-                .assertNext(response -> assertThat(response).isEqualTo(expected))
+                .assertNext(response -> {
+                    assertThat(response.getBody()).isEqualTo(expected);
+                    assertThat(response.getStatusCode()).isEqualTo(OK);
+                })
                 .verifyComplete();
     }
 
@@ -50,7 +54,10 @@ class AuthControllerTest {
                 .thenReturn(Mono.just(expected));
 
         StepVerifier.create(this.authController.signUp(request))
-                .assertNext(response -> assertThat(response).isEqualTo(expected))
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(OK);
+                    assertThat(response.getBody()).isEqualTo(expected);
+                })
                 .verifyComplete();
     }
 

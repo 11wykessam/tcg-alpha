@@ -1,7 +1,7 @@
 package com.wykessam.tsgalpha.api.response;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 /**
@@ -9,9 +9,9 @@ import lombok.extern.jackson.Jacksonized;
  * Represents the response for an attempt to login.
  */
 @Getter
-@SuperBuilder
+@Builder
 @Jacksonized
-public class LoginResponseV1 extends ErrorAwareResponse {
+public class LoginResponseV1 {
 
     private final String token;
 

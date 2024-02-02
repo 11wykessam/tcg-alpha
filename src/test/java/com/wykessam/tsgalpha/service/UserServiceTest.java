@@ -1,6 +1,7 @@
 package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.persistence.entity.user.User;
+import com.wykessam.tsgalpha.persistence.entity.user.UserRole;
 import com.wykessam.tsgalpha.persistence.repository.UserDBRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static com.wykessam.tsgalpha.persistence.entity.user.UserRole.ROLE_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +25,7 @@ class UserServiceTest {
 
     private static final String USERNAME = "USERNAME";
     private static final String PASSWORD = "PASSWORD";
+    private static final UserRole ROLE = ROLE_USER;
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Mock
@@ -36,6 +39,7 @@ class UserServiceTest {
         final User extractedUser = User.builder()
                 .username(USERNAME)
                 .password(passwordEncoder.encode(PASSWORD))
+                .role(ROLE)
                 .build();
 
         when(this.userDBRepository.findFirstByUsername(USERNAME))
@@ -53,6 +57,7 @@ class UserServiceTest {
         final User userToSave = User.builder()
                 .username(USERNAME)
                 .password(passwordEncoder.encode(PASSWORD))
+                .role(ROLE)
                 .build();
 
         when(this.userDBRepository.save(userToSave))

@@ -2,6 +2,7 @@ package com.wykessam.tsgalpha.persistence.entity.user;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
@@ -17,7 +19,6 @@ import java.util.UUID;
 
 /**
  * @author Samuel Wykes.
- *
  * Represents a user of the application.
  */
 @Document(collection = "user")
@@ -32,8 +33,17 @@ public class User implements Serializable, UserDetails {
     @Id
     @Builder.Default
     private final UUID id = UUID.randomUUID();
+
+    @NotNull
+    @NonNull
     private final String username;
+
+    @NotNull
+    @NonNull
     private final String password;
+
+    @NotNull
+    @NonNull
     private final UserRole role;
 
     @Override

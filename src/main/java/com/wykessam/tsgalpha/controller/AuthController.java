@@ -7,6 +7,7 @@ import com.wykessam.tsgalpha.api.response.SignUpResponseV1;
 import com.wykessam.tsgalpha.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -29,8 +30,9 @@ public class AuthController {
      * @return {@link LoginResponseV1}.
      */
     @MessageMapping("auth.login.v1")
-    public Mono<LoginResponseV1> login(@Validated final LoginRequestV1 request) {
-        return this.authService.login(request);
+    public Mono<ResponseEntity<LoginResponseV1>> login(@Validated final LoginRequestV1 request) {
+        return this.authService.login(request)
+                .map(ResponseEntity::ok);
     }
 
     /**
@@ -40,8 +42,9 @@ public class AuthController {
      * @return {@link SignUpResponseV1}.
      */
     @MessageMapping("auth.signUp.v2")
-    public Mono<SignUpResponseV1> signUp(@Validated final SignUpRequestV1 request) {
-        return this.authService.signUp(request);
+    public Mono<ResponseEntity<SignUpResponseV1>> signUp(@Validated final SignUpRequestV1 request) {
+        return this.authService.signUp(request)
+                .map(ResponseEntity::ok);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.wykessam.tsgalpha.model.chat;
+package com.wykessam.tsgalpha.dto.chat;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -4,17 +4,17 @@ import com.wykessam.tsgalpha.api.request.LoginRequestV1;
 import com.wykessam.tsgalpha.api.request.SignUpRequestV1;
 import com.wykessam.tsgalpha.api.response.LoginResponseV1;
 import com.wykessam.tsgalpha.api.response.SignUpResponseV1;
+import com.wykessam.tsgalpha.exception.InvalidCredentialsException;
+import com.wykessam.tsgalpha.exception.UsernameExistsException;
 import com.wykessam.tsgalpha.persistence.entity.user.User;
-import com.wykessam.tsgalpha.util.ErrorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static com.wykessam.tsgalpha.persistence.entity.user.UserRole.ROLE_USER;
 
 /**
  * @author Samuel Wykes.
@@ -26,12 +26,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @RequiredArgsConstructor
 public class AuthService {
 
-    public static final String INVALID_CREDENTIALS = "Invalid Credentials";
-    public static final String USERNAME_ALREADY_EXISTS = "Username Already Exists";
-
     private final JwtService jwtService;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * Perform a login request for a user.
@@ -44,7 +40,7 @@ public class AuthService {
                 .filter(user -> BCrypt.checkpw(request.getPassword(), user.getPassword()))
                 .flatMap(this.jwtService::generateToken)
                 .map(AuthService::loginSuccess)
-                .switchIfEmpty(Mono.just(loginFailure()));
+                .switchIfEmpty(Mono.error(new InvalidCredentialsException()));
     }
 
     /**
@@ -57,10 +53,11 @@ public class AuthService {
         return this.userService.getByUsername(request.getUsername())
                 .hasElement()
                 .flatMap(usernameExists -> usernameExists
-                                ? Mono.just(signUpFailure(request))
+                        ? Mono.error(new UsernameExistsException(request.getUsername()))
                                 : this.userService.saveUser(User.builder()
                                         .username(request.getUsername())
-                                        .password(this.passwordEncoder.encode(request.getPassword()))
+                                        .role(ROLE_USER)
+                                        .password(new BCryptPasswordEncoder().encode(request.getPassword()))
                                         .build()
                                 )
                                 .flatMap(this.jwtService::generateToken)
@@ -74,21 +71,10 @@ public class AuthService {
                 .build();
     }
 
-    private static LoginResponseV1 loginFailure() {
-        return ErrorUtil.buildError(INVALID_CREDENTIALS, UNAUTHORIZED,
-                LoginResponseV1.builder().build()
-        );
-    }
-
     private static SignUpResponseV1 signupSuccess(final String token) {
         return SignUpResponseV1.builder()
                 .token(token)
                 .build();
-    }
-
-    private static SignUpResponseV1 signUpFailure(final SignUpRequestV1 request) {
-        return ErrorUtil.buildError(USERNAME_ALREADY_EXISTS, CONFLICT,
-                SignUpResponseV1.builder().build());
     }
 
 }

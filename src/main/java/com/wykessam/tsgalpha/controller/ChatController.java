@@ -1,6 +1,6 @@
 package com.wykessam.tsgalpha.controller;
 
-import com.wykessam.tsgalpha.model.chat.ChatMessage;
+import com.wykessam.tsgalpha.dto.chat.ChatMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;

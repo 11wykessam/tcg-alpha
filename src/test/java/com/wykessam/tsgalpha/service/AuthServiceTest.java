@@ -2,25 +2,23 @@ package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.api.request.LoginRequestV1;
 import com.wykessam.tsgalpha.api.request.SignUpRequestV1;
+import com.wykessam.tsgalpha.exception.InvalidCredentialsException;
+import com.wykessam.tsgalpha.exception.UsernameExistsException;
 import com.wykessam.tsgalpha.persistence.entity.user.User;
+import com.wykessam.tsgalpha.persistence.entity.user.UserRole;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static com.wykessam.tsgalpha.ErrorUtil.assertErrorHeader;
-import static com.wykessam.tsgalpha.service.AuthService.INVALID_CREDENTIALS;
-import static com.wykessam.tsgalpha.service.AuthService.USERNAME_ALREADY_EXISTS;
+import static com.wykessam.tsgalpha.persistence.entity.user.UserRole.ROLE_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
  * @author Samuel Wykes.
@@ -31,9 +29,8 @@ class AuthServiceTest {
     private static final String USERNAME = "USER";
     private static final String PASSWORD = "PASSWORD";
     private static final String TOKEN = "TOKEN";
+    private static final UserRole ROLE = ROLE_USER;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     @Mock
     private UserService userService;
@@ -51,6 +48,7 @@ class AuthServiceTest {
         final User extractedUser = User.builder()
                 .username(USERNAME)
                 .password(new BCryptPasswordEncoder().encode(PASSWORD))
+                .role(ROLE)
                 .build();
 
         when(this.userService.getByUsername(USERNAME))
@@ -59,25 +57,19 @@ class AuthServiceTest {
                 .thenReturn(Mono.just(TOKEN));
 
         StepVerifier.create(this.authService.login(request))
-                .assertNext(response -> {
-                    assertThat(response.hasError()).isFalse();
-                    assertThat(response.getToken()).isEqualTo(TOKEN);
-                })
+                .assertNext(response -> assertThat(response.getToken()).isEqualTo(TOKEN))
                 .verifyComplete();
     }
 
     @Test
-    void loginFailureUsernameDoesNotExist() {
+    void loginFailureUserDoesNotExist() {
         final LoginRequestV1 request = createLoginRequest();
 
         when(this.userService.getByUsername(USERNAME))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(this.authService.login(request))
-                .assertNext(response -> {
-                    assertErrorHeader(response, INVALID_CREDENTIALS, UNAUTHORIZED);
-                })
-                .verifyComplete();
+                .verifyErrorSatisfies(error -> assertThat(error instanceof InvalidCredentialsException).isTrue());
     }
 
     @Test
@@ -87,16 +79,14 @@ class AuthServiceTest {
         final User extractedUser = User.builder()
                 .username(USERNAME)
                 .password(new BCryptPasswordEncoder().encode(PASSWORD + "123"))
+                .role(ROLE)
                 .build();
 
         when(this.userService.getByUsername(USERNAME))
                 .thenReturn(Mono.just(extractedUser));
 
         StepVerifier.create(this.authService.login(request))
-                .assertNext(response -> {
-                    assertErrorHeader(response, INVALID_CREDENTIALS, UNAUTHORIZED);
-                })
-                .verifyComplete();
+                .verifyErrorSatisfies(error -> assertThat(error instanceof InvalidCredentialsException).isTrue());
     }
 
     @Test
@@ -106,6 +96,7 @@ class AuthServiceTest {
         final User user = User.builder()
                 .username(USERNAME)
                 .password(PASSWORD)
+                .role(ROLE)
                 .build();
 
         when(this.userService.getByUsername(USERNAME))
@@ -116,10 +107,7 @@ class AuthServiceTest {
                 .thenReturn(Mono.just(TOKEN));
 
         StepVerifier.create(this.authService.signUp(request))
-                .assertNext(response -> {
-                    assertThat(response.hasError()).isFalse();
-                    assertThat(response.getToken()).isEqualTo(TOKEN);
-                })
+                .assertNext(response -> assertThat(response.getToken()).isEqualTo(TOKEN))
                 .verifyComplete();
     }
 
@@ -130,16 +118,14 @@ class AuthServiceTest {
         final User user = User.builder()
                 .username(USERNAME)
                 .password(PASSWORD)
+                .role(ROLE)
                 .build();
 
         when(this.userService.getByUsername(USERNAME))
                 .thenReturn(Mono.just(user));
 
         StepVerifier.create(this.authService.signUp(request))
-                .assertNext(response -> {
-                    assertErrorHeader(response, USERNAME_ALREADY_EXISTS, CONFLICT);
-                })
-                .verifyComplete();
+                .verifyErrorSatisfies(error -> assertThat(error instanceof UsernameExistsException).isTrue());
     }
 
     private static LoginRequestV1 createLoginRequest() {
