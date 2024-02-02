@@ -2,17 +2,13 @@ package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.persistence.entity.User;
 import com.wykessam.tsgalpha.persistence.repository.UserDBRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-
-import static com.wykessam.tsgalpha.persistence.entity.UserRole.ROLE_ADMIN;
 
 /**
  * @author Samuel Wykes.
@@ -25,7 +21,6 @@ import static com.wykessam.tsgalpha.persistence.entity.UserRole.ROLE_ADMIN;
 public class UserService {
 
     private final UserDBRepository userDBRepository;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * Get the required service for Spring Security.
@@ -46,16 +41,14 @@ public class UserService {
         return this.userDBRepository.findFirstByUsername(username);
     }
 
-    @PostConstruct
-    public void init() {
-        this.userDBRepository
-                .deleteAll()
-                .then(this.userDBRepository.save(User.builder()
-                                .username("user")
-                        .password(this.passwordEncoder.encode("password"))
-                        .role(ROLE_ADMIN)
-                                .build()))
-                .subscribe(result -> log.info("User saved: " + result));
+    /**
+     * Save a user to the database.
+     *
+     * @param user {@link User}.
+     * @return {@link User}.
+     */
+    public Mono<User> saveUser(final User user) {
+        return this.userDBRepository.save(user);
     }
 
 }
