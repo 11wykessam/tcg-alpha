@@ -2,7 +2,7 @@ package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.api.request.LoginRequestV1;
 import com.wykessam.tsgalpha.api.request.SignUpRequestV1;
-import com.wykessam.tsgalpha.persistence.entity.User;
+import com.wykessam.tsgalpha.persistence.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

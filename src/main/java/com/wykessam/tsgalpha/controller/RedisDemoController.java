@@ -1,6 +1,6 @@
 package com.wykessam.tsgalpha.controller;
 
-import com.wykessam.tsgalpha.persistence.entity.User;
+import com.wykessam.tsgalpha.persistence.entity.user.User;
 import com.wykessam.tsgalpha.persistence.repository.UserDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;

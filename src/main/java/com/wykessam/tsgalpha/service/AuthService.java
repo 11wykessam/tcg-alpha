@@ -4,7 +4,7 @@ import com.wykessam.tsgalpha.api.request.LoginRequestV1;
 import com.wykessam.tsgalpha.api.request.SignUpRequestV1;
 import com.wykessam.tsgalpha.api.response.LoginResponseV1;
 import com.wykessam.tsgalpha.api.response.SignUpResponseV1;
-import com.wykessam.tsgalpha.persistence.entity.User;
+import com.wykessam.tsgalpha.persistence.entity.user.User;
 import com.wykessam.tsgalpha.util.ErrorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

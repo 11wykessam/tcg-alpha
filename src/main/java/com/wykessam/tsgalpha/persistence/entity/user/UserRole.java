@@ -1,4 +1,4 @@
-package com.wykessam.tsgalpha.persistence.entity;
+package com.wykessam.tsgalpha.persistence.entity.user;
 
 /**
  * @author Samuel Wykes.

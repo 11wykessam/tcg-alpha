@@ -1,6 +1,6 @@
 package com.wykessam.tsgalpha.service;
 
-import com.wykessam.tsgalpha.persistence.entity.User;
+import com.wykessam.tsgalpha.persistence.entity.user.User;
 import com.wykessam.tsgalpha.persistence.repository.UserDBRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

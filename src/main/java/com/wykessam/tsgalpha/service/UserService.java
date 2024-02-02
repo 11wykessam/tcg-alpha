@@ -1,6 +1,6 @@
 package com.wykessam.tsgalpha.service;
 
-import com.wykessam.tsgalpha.persistence.entity.User;
+import com.wykessam.tsgalpha.persistence.entity.user.User;
 import com.wykessam.tsgalpha.persistence.repository.UserDBRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
