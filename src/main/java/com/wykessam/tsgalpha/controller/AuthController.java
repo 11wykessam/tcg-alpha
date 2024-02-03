@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
 /**
  * @author Samuel Wykes.
  * Controller used to log in users.
@@ -32,7 +34,8 @@ public class AuthController {
     @MessageMapping("auth.login.v1")
     public Mono<ResponseEntity<LoginResponseV1>> login(@Validated final LoginRequestV1 request) {
         return this.authService.login(request)
-                .map(ResponseEntity::ok);
+                .map(ResponseEntity::ok)
+                .onErrorResume(exception -> Mono.just(ResponseEntity.status(FORBIDDEN).build()));
     }
 
     /**
