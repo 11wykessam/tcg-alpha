@@ -1,5 +1,6 @@
 package com.wykessam.tsgalpha.service;
 
+import com.wykessam.tsgalpha.dto.player.PlayerDTO;
 import com.wykessam.tsgalpha.exception.PlayerNotFoundException;
 import com.wykessam.tsgalpha.persistence.entity.player.Player;
 import com.wykessam.tsgalpha.persistence.repository.PlayerDBRepository;
@@ -30,6 +31,17 @@ public class PlayerService {
     public Mono<Player> getById(final UUID id) {
         return this.playerDBRepository.findById(id)
                 .switchIfEmpty(Mono.error(new PlayerNotFoundException(id)));
+    }
+
+    /**
+     * Convert player object to its DTO representation.
+     *
+     * @param player {@link Player}.
+     * @return {@link PlayerDTO}.
+     */
+    public Mono<PlayerDTO> toDTO(final Player player) {
+        return Mono.just(PlayerDTO.builder()
+                .build());
     }
 
 }
