@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.Deque;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,5 +32,13 @@ public class BoardDTO {
     @NotNull
     @NonNull
     private final Set<CardDTO> homeArea;
+
+    @NotNull
+    @NonNull
+    private final Set<CardDTO> grave;
+
+    @NotNull
+    @NonNull
+    private final Deque<CardDTO> deck;
 
 }

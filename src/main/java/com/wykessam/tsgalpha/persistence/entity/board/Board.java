@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,5 +35,11 @@ public class Board implements Serializable {
 
     @Builder.Default
     private final Set<UUID> homeAreaCardIds = Set.of();
+
+    @Builder.Default
+    private final Set<UUID> graveCardIds = Set.of();
+
+    @Builder.Default
+    private final Deque<UUID> deckCardIds = new ArrayDeque<>();
 
 }

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -49,22 +51,36 @@ public class BoardService {
     public Mono<BoardDTO> toDTO(final Board board) {
         return Mono.just(BoardDTO.builder())
                 .flatMap(builder -> this.enrichWithId(builder, board))
-                .flatMap(builder -> this.enrichWithCardSet(builder::neutralArea, board))
-                .flatMap(builder -> this.enrichWithCardSet(builder::homeArea, board))
+                .flatMap(builder -> this.enrichWithCardSet(builder::neutralArea, board.getNeutralAreaCardIds()))
+                .flatMap(builder -> this.enrichWithCardSet(builder::homeArea, board.getHomeAreaCardIds()))
+                .flatMap(builder -> this.enrichWithCardSet(builder::grave, board.getGraveCardIds()))
+                .flatMap(builder -> this.enrichWithCardDeque(builder::deck, board.getDeckCardIds()))
                 .map(BoardDTOBuilder::build);
-
     }
 
     private Mono<BoardDTOBuilder> enrichWithId(final BoardDTOBuilder builder, final Board board) {
         return Mono.just(builder.id(board.getId()));
     }
 
-    private Mono<BoardDTOBuilder> enrichWithCardSet(final Function<Set<CardDTO>, BoardDTOBuilder> enrichmentFunction,
-                                                    final Board board) {
-        return Flux.fromIterable(board.getNeutralAreaCardIds())
+    private Mono<BoardDTOBuilder> enrichWithCardSet(
+            final Function<Set<CardDTO>, BoardDTOBuilder> enrichmentFunction, final Set<UUID> set
+    ) {
+        return Flux.fromIterable(set)
                 .flatMap(this.cardService::getById)
                 .flatMap(this.cardService::toDTO)
                 .collect(Collectors.toSet())
+                .map(enrichmentFunction);
+    }
+
+    private Mono<BoardDTOBuilder> enrichWithCardDeque(
+            final Function<Deque<CardDTO>, BoardDTOBuilder> enrichmentFunction, final Deque<UUID> deque
+    ) {
+        return Flux.fromIterable(deque)
+                .flatMapSequential(this.cardService::getById)
+                .flatMapSequential(this.cardService::toDTO)
+                .collectList()
+                .doOnNext(thing -> log.info(thing.toString()))
+                .map(ArrayDeque::new)
                 .map(enrichmentFunction);
     }
 

@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -69,6 +71,8 @@ class BoardServiceTest {
                 .id(ID_ONE)
                 .neutralAreaCardIds(Set.of(ID_ONE, ID_TWO))
                 .homeAreaCardIds(Set.of(ID_ONE, ID_TWO))
+                .graveCardIds(Set.of(ID_ONE, ID_TWO))
+                .deckCardIds(new ArrayDeque<>(List.of(ID_ONE, ID_TWO)))
                 .build();
 
         when(this.cardService.getById(ID_ONE))
@@ -85,6 +89,9 @@ class BoardServiceTest {
                     assertThat(boardDTO.getId()).isEqualTo(ID_ONE);
                     assertThat(boardDTO.getNeutralArea()).isEqualTo(Set.of(cardDTOOne, cardDTOTwo));
                     assertThat(boardDTO.getHomeArea()).isEqualTo(Set.of(cardDTOOne, cardDTOTwo));
+                    assertThat(boardDTO.getGrave()).isEqualTo(Set.of(cardDTOOne, cardDTOTwo));
+                    assertThat(boardDTO.getDeck().getFirst()).isEqualTo(cardDTOOne);
+                    assertThat(boardDTO.getDeck().getLast()).isEqualTo(cardDTOTwo);
                 })
                 .verifyComplete();
     }
