@@ -42,4 +42,19 @@ public class Board implements Serializable {
     @Builder.Default
     private final Deque<UUID> deckCardIds = new ArrayDeque<>();
 
+    @Builder.Default
+    private final Deque<UUID> lifePileCardIds = new ArrayDeque<>();
+
+    private final UUID championCardId;
+
+    private final UUID battleFieldZoneCardId;
+
+    private final UUID disruptionZoneOneCardId;
+
+    private final UUID disruptionZoneTwoCardId;
+
+    private final Integer portalCount;
+
+    private final Integer engineCount;
+
 }

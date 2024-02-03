@@ -50,16 +50,59 @@ public class BoardService {
      */
     public Mono<BoardDTO> toDTO(final Board board) {
         return Mono.just(BoardDTO.builder())
-                .flatMap(builder -> this.enrichWithId(builder, board))
-                .flatMap(builder -> this.enrichWithCardSet(builder::neutralArea, board.getNeutralAreaCardIds()))
-                .flatMap(builder -> this.enrichWithCardSet(builder::homeArea, board.getHomeAreaCardIds()))
-                .flatMap(builder -> this.enrichWithCardSet(builder::grave, board.getGraveCardIds()))
-                .flatMap(builder -> this.enrichWithCardDeque(builder::deck, board.getDeckCardIds()))
+                .flatMap(builder ->
+                        this.enrichWithAttribute(builder::id, board.getId())
+                )
+                .flatMap(builder ->
+                        this.enrichWithCardSet(builder::neutralArea, board.getNeutralAreaCardIds())
+                )
+                .flatMap(builder ->
+                        this.enrichWithCardSet(builder::homeArea, board.getHomeAreaCardIds())
+                )
+                .flatMap(builder ->
+                        this.enrichWithCardSet(builder::grave, board.getGraveCardIds())
+                )
+                .flatMap(builder ->
+                        this.enrichWithCardDeque(builder::deck, board.getDeckCardIds())
+                )
+                .flatMap(builder ->
+                        this.enrichWithCardDeque(builder::lifePile, board.getLifePileCardIds())
+                )
+                .flatMap(builder ->
+                        this.enrichWithCard(builder::champion, board.getChampionCardId(), builder)
+                )
+                .flatMap(builder ->
+                        this.enrichWithCard(builder::battleFieldZone, board.getBattleFieldZoneCardId(), builder)
+                )
+                .flatMap(builder ->
+                        this.enrichWithCard(builder::disruptionZoneOne, board.getDisruptionZoneOneCardId(), builder)
+                )
+                .flatMap(builder ->
+                        this.enrichWithCard(builder::disruptionZoneTwo, board.getDisruptionZoneTwoCardId(), builder)
+                )
+                .flatMap(builder ->
+                        this.enrichWithAttribute(builder::portalCount, board.getPortalCount())
+                )
+                .flatMap(builder ->
+                        this.enrichWithAttribute(builder::engineCount, board.getEngineCount())
+                )
                 .map(BoardDTOBuilder::build);
     }
 
-    private Mono<BoardDTOBuilder> enrichWithId(final BoardDTOBuilder builder, final Board board) {
-        return Mono.just(builder.id(board.getId()));
+    private <T> Mono<BoardDTOBuilder> enrichWithAttribute(
+            final Function<T, BoardDTOBuilder> enrichmentFunction, final T attribute
+    ) {
+        return Mono.just(attribute).map(enrichmentFunction);
+    }
+
+    private Mono<BoardDTOBuilder> enrichWithCard(
+            final Function<CardDTO, BoardDTOBuilder> enrichmentFunction, final UUID id, final BoardDTOBuilder builder
+    ) {
+        return Mono.justOrEmpty(id)
+                .flatMap(this.cardService::getById)
+                .flatMap(this.cardService::toDTO)
+                .map(enrichmentFunction)
+                .switchIfEmpty(Mono.just(builder));
     }
 
     private Mono<BoardDTOBuilder> enrichWithCardSet(

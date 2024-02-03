@@ -73,6 +73,13 @@ class BoardServiceTest {
                 .homeAreaCardIds(Set.of(ID_ONE, ID_TWO))
                 .graveCardIds(Set.of(ID_ONE, ID_TWO))
                 .deckCardIds(new ArrayDeque<>(List.of(ID_ONE, ID_TWO)))
+                .lifePileCardIds(new ArrayDeque<>(List.of(ID_ONE, ID_TWO)))
+                .championCardId(ID_ONE)
+                .battleFieldZoneCardId(ID_TWO)
+                .disruptionZoneOneCardId(ID_ONE)
+                .disruptionZoneTwoCardId(ID_TWO)
+                .portalCount(0)
+                .engineCount(0)
                 .build();
 
         when(this.cardService.getById(ID_ONE))
@@ -92,6 +99,14 @@ class BoardServiceTest {
                     assertThat(boardDTO.getGrave()).isEqualTo(Set.of(cardDTOOne, cardDTOTwo));
                     assertThat(boardDTO.getDeck().getFirst()).isEqualTo(cardDTOOne);
                     assertThat(boardDTO.getDeck().getLast()).isEqualTo(cardDTOTwo);
+                    assertThat(boardDTO.getLifePile().getFirst()).isEqualTo(cardDTOOne);
+                    assertThat(boardDTO.getLifePile().getLast()).isEqualTo(cardDTOTwo);
+                    assertThat(boardDTO.getChampion()).isEqualTo(cardDTOOne);
+                    assertThat(boardDTO.getBattleFieldZone()).isEqualTo(cardDTOTwo);
+                    assertThat(boardDTO.getDisruptionZoneOne()).isEqualTo(cardDTOOne);
+                    assertThat(boardDTO.getDisruptionZoneTwo()).isEqualTo(cardDTOTwo);
+                    assertThat(boardDTO.getPortalCount()).isEqualTo(0);
+                    assertThat(boardDTO.getEngineCount()).isEqualTo(0);
                 })
                 .verifyComplete();
     }

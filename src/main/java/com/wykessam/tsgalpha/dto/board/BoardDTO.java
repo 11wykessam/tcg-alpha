@@ -41,4 +41,20 @@ public class BoardDTO {
     @NonNull
     private final Deque<CardDTO> deck;
 
+    @NotNull
+    @NonNull
+    private final Deque<CardDTO> lifePile;
+
+    private final CardDTO champion;
+
+    private final CardDTO battleFieldZone;
+
+    private final CardDTO disruptionZoneOne;
+
+    private final CardDTO disruptionZoneTwo;
+
+    private final Integer portalCount;
+
+    private final Integer engineCount;
+
 }
