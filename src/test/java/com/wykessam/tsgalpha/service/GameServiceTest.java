@@ -2,7 +2,7 @@ package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.dto.player.PlayerDTO;
 import com.wykessam.tsgalpha.exception.GameNotFoundException;
-import com.wykessam.tsgalpha.persistence.entity.board.Game;
+import com.wykessam.tsgalpha.persistence.entity.game.Game;
 import com.wykessam.tsgalpha.persistence.entity.player.Player;
 import com.wykessam.tsgalpha.persistence.repository.GameDBRepository;
 import org.junit.jupiter.api.Test;

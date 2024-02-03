@@ -1,4 +1,4 @@
-package com.wykessam.tsgalpha.persistence.entity.board;
+package com.wykessam.tsgalpha.persistence.entity.game;
 
 import lombok.Builder;
 import lombok.Getter;

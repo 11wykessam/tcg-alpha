@@ -1,6 +1,5 @@
-package com.wykessam.tsgalpha.persistence.entity.player;
+package com.wykessam.tsgalpha.persistence.entity.board;
 
-import com.wykessam.tsgalpha.persistence.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +12,13 @@ import java.util.UUID;
 
 /**
  * @author Samuel Wykes.
- * Represents a player in a specific game of the TCG.
- * This differs to {@link User} in that an instance is unique to a game instance, but is still linked to alogged-in user.
+ * Represents a player's board in the TCG.
  */
-@Document(collection = "player")
+@Document(collection = "board")
 @Getter
 @Builder
 @RequiredArgsConstructor
-public class Player implements Serializable {
+public class Board implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -28,6 +26,5 @@ public class Player implements Serializable {
     @Id
     @Builder.Default
     private final UUID id = UUID.randomUUID();
-    private final UUID boardId;
 
 }

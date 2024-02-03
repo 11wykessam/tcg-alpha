@@ -1,7 +1,7 @@
 package com.wykessam.tsgalpha.dto.game;
 
 import com.wykessam.tsgalpha.dto.player.PlayerDTO;
-import com.wykessam.tsgalpha.persistence.entity.board.Game;
+import com.wykessam.tsgalpha.persistence.entity.game.Game;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
