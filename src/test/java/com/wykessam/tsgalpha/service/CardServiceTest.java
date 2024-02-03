@@ -50,4 +50,17 @@ class CardServiceTest {
                 .verifyErrorSatisfies(error -> assertThat(error instanceof CardNotFoundException).isTrue());
     }
 
+    @Test
+    void toDTOSuccess() {
+        final Card card = Card.builder()
+                .id(ID)
+                .build();
+
+        StepVerifier.create(this.cardService.toDTO(card))
+                .assertNext(cardDTO -> {
+                    assertThat(cardDTO.getId()).isEqualTo(ID);
+                })
+                .verifyComplete();
+    }
+
 }

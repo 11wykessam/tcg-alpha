@@ -1,5 +1,7 @@
 package com.wykessam.tsgalpha.service;
 
+import com.wykessam.tsgalpha.dto.card.CardDTO;
+import com.wykessam.tsgalpha.dto.card.CardDTO.CardDTOBuilder;
 import com.wykessam.tsgalpha.exception.CardNotFoundException;
 import com.wykessam.tsgalpha.persistence.entity.card.Card;
 import com.wykessam.tsgalpha.persistence.repository.CardDBRepository;
@@ -30,6 +32,22 @@ public class CardService {
     public Mono<Card> getById(final UUID id) {
         return this.cardDBRepository.findById(id)
                 .switchIfEmpty(Mono.error(new CardNotFoundException(id)));
+    }
+
+    /**
+     * Convert card object to its DTO representation.
+     *
+     * @param card {@link Card}.
+     * @return {@link CardDTO}.
+     */
+    public Mono<CardDTO> toDTO(final Card card) {
+        return Mono.just(CardDTO.builder())
+                .flatMap(builder -> this.enrichWithId(builder, card))
+                .map(CardDTOBuilder::build);
+    }
+
+    private Mono<CardDTOBuilder> enrichWithId(final CardDTOBuilder builder, final Card card) {
+        return Mono.just(builder.id(card.getId()));
     }
 
 }
