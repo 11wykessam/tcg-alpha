@@ -22,7 +22,6 @@ import java.util.UUID;
 public class PlayerService {
 
     private final PlayerDBRepository playerDBRepository;
-
     private final BoardService boardService;
 
     /**

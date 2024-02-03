@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -26,5 +27,11 @@ public class Board implements Serializable {
     @Id
     @Builder.Default
     private final UUID id = UUID.randomUUID();
+
+    @Builder.Default
+    private final Set<UUID> neutralAreaCardIds = Set.of();
+
+    @Builder.Default
+    private final Set<UUID> homeAreaCardIds = Set.of();
 
 }

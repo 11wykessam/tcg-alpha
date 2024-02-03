@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final GameDBRepository gameDBRepository;
-
     private final PlayerService playerService;
 
     /**
