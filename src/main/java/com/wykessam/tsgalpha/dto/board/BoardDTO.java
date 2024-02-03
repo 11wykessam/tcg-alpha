@@ -1,7 +1,6 @@
-package com.wykessam.tsgalpha.dto.player;
+package com.wykessam.tsgalpha.dto.board;
 
-import com.wykessam.tsgalpha.dto.board.BoardDTO;
-import com.wykessam.tsgalpha.persistence.entity.player.Player;
+import com.wykessam.tsgalpha.persistence.entity.board.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,19 +11,15 @@ import java.util.UUID;
 
 /**
  * @author Samuel Wykes.
- * DTO used to represent {@link Player} objects.
+ * DTO used to represent {@link Board} objects.
  */
 @Getter
 @Builder
 @RequiredArgsConstructor
-public class PlayerDTO {
+public class BoardDTO {
 
     @NotNull
     @NonNull
     private final UUID id;
-
-    @NotNull
-    @NonNull
-    private final BoardDTO board;
 
 }

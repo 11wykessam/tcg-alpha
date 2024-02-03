@@ -1,6 +1,7 @@
 package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.dto.player.PlayerDTO;
+import com.wykessam.tsgalpha.dto.player.PlayerDTO.PlayerDTOBuilder;
 import com.wykessam.tsgalpha.exception.PlayerNotFoundException;
 import com.wykessam.tsgalpha.persistence.entity.player.Player;
 import com.wykessam.tsgalpha.persistence.repository.PlayerDBRepository;
@@ -22,6 +23,8 @@ public class PlayerService {
 
     private final PlayerDBRepository playerDBRepository;
 
+    private final BoardService boardService;
+
     /**
      * Get a player by its unique identifier.
      *
@@ -40,8 +43,20 @@ public class PlayerService {
      * @return {@link PlayerDTO}.
      */
     public Mono<PlayerDTO> toDTO(final Player player) {
-        return Mono.just(PlayerDTO.builder()
-                .build());
+        return Mono.just(PlayerDTO.builder())
+                .flatMap(builder -> this.enrichWithId(builder, player))
+                .flatMap(builder -> this.enrichWithBoard(builder, player))
+                .map(PlayerDTOBuilder::build);
+    }
+
+    private Mono<PlayerDTOBuilder> enrichWithId(final PlayerDTOBuilder builder, final Player player) {
+        return Mono.just(builder.id(player.getId()));
+    }
+
+    private Mono<PlayerDTOBuilder> enrichWithBoard(final PlayerDTOBuilder builder, final Player player) {
+        return this.boardService.getById(player.getBoardId())
+                .flatMap(this.boardService::toDTO)
+                .map(builder::board);
     }
 
 }
