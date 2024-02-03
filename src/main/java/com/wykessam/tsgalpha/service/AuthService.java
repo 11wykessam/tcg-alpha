@@ -5,7 +5,7 @@ import com.wykessam.tsgalpha.api.request.SignUpRequestV1;
 import com.wykessam.tsgalpha.api.response.LoginResponseV1;
 import com.wykessam.tsgalpha.api.response.SignUpResponseV1;
 import com.wykessam.tsgalpha.exception.InvalidCredentialsException;
-import com.wykessam.tsgalpha.exception.UsernameExistsException;
+import com.wykessam.tsgalpha.exception.UserExistsException;
 import com.wykessam.tsgalpha.persistence.entity.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ public class AuthService {
         return this.userService.getByUsername(request.getUsername())
                 .hasElement()
                 .flatMap(usernameExists -> usernameExists
-                        ? Mono.error(new UsernameExistsException(request.getUsername()))
+                        ? Mono.error(new UserExistsException(request.getUsername()))
                                 : this.userService.saveUser(User.builder()
                                         .username(request.getUsername())
                                         .role(ROLE_USER)

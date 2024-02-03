@@ -35,7 +35,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
-    void getByUsernameTest() {
+    void getByUsernameSuccess() {
         final User extractedUser = User.builder()
                 .username(USERNAME)
                 .password(passwordEncoder.encode(PASSWORD))
@@ -53,7 +53,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUserTest() {
+    void saveUserSuccess() {
         final User userToSave = User.builder()
                 .username(USERNAME)
                 .password(passwordEncoder.encode(PASSWORD))

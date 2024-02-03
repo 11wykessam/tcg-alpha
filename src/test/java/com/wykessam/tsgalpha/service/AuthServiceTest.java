@@ -3,7 +3,7 @@ package com.wykessam.tsgalpha.service;
 import com.wykessam.tsgalpha.api.request.LoginRequestV1;
 import com.wykessam.tsgalpha.api.request.SignUpRequestV1;
 import com.wykessam.tsgalpha.exception.InvalidCredentialsException;
-import com.wykessam.tsgalpha.exception.UsernameExistsException;
+import com.wykessam.tsgalpha.exception.UserExistsException;
 import com.wykessam.tsgalpha.persistence.entity.user.User;
 import com.wykessam.tsgalpha.persistence.entity.user.UserRole;
 import org.junit.jupiter.api.Test;
@@ -125,7 +125,7 @@ class AuthServiceTest {
                 .thenReturn(Mono.just(user));
 
         StepVerifier.create(this.authService.signUp(request))
-                .verifyErrorSatisfies(error -> assertThat(error instanceof UsernameExistsException).isTrue());
+                .verifyErrorSatisfies(error -> assertThat(error instanceof UserExistsException).isTrue());
     }
 
     private static LoginRequestV1 createLoginRequest() {
