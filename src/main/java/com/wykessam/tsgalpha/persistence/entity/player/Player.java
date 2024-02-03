@@ -1,4 +1,4 @@
-package com.wykessam.tsgalpha.persistence.entity.Player;
+package com.wykessam.tsgalpha.persistence.entity.player;
 
 import com.wykessam.tsgalpha.persistence.entity.user.User;
 import lombok.Builder;

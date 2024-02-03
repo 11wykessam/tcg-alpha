@@ -1,6 +1,6 @@
 package com.wykessam.tsgalpha.dto.player;
 
-import com.wykessam.tsgalpha.persistence.entity.Player.Player;
+import com.wykessam.tsgalpha.persistence.entity.player.Player;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

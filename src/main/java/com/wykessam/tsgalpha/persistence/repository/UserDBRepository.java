@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * @author Samuel Wykes.
+ * Repository responsible for accessing {@link User} objects.
  */
 @Repository
 public interface UserDBRepository extends ReactiveMongoRepository<User, String> {

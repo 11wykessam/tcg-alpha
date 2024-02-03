@@ -23,7 +23,6 @@ public class GameService {
 
     /**
      * Get a game by its unique identifier.
-     *
      * @param id {@link UUID}.
      * @return {@link Game}.
      */
