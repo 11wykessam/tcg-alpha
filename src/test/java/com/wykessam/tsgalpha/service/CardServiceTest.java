@@ -2,6 +2,7 @@ package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.exception.CardNotFoundException;
 import com.wykessam.tsgalpha.persistence.entity.card.Card;
+import com.wykessam.tsgalpha.persistence.entity.card.ChampionCard;
 import com.wykessam.tsgalpha.persistence.repository.CardDBRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,8 @@ import static org.mockito.Mockito.when;
 class CardServiceTest {
 
     private static final UUID ID = UUID.randomUUID();
+    private static final String ORIGINAL_NAME = "NAME";
+
     @Mock
     private CardDBRepository cardDBRepository;
 
@@ -51,9 +54,10 @@ class CardServiceTest {
     }
 
     @Test
-    void toDTOSuccess() {
-        final Card card = Card.builder()
+    void championToDTOSuccess() {
+        final Card card = ChampionCard.builder()
                 .id(ID)
+                .originalName(ORIGINAL_NAME)
                 .build();
 
         StepVerifier.create(this.cardService.toDTO(card))

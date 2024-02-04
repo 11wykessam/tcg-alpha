@@ -53,8 +53,10 @@ public class Board implements Serializable {
 
     private final UUID disruptionZoneTwoCardId;
 
-    private final Integer portalCount;
+    @Builder.Default
+    private final Integer portalCount = 0;
 
-    private final Integer engineCount;
+    @Builder.Default
+    private final Integer engineCount = 0;
 
 }

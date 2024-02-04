@@ -111,4 +111,29 @@ class BoardServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void toDTODefaultValuesSuccess() {
+        final Board board = Board.builder()
+                .portalCount(0)
+                .engineCount(0)
+                .build();
+
+        StepVerifier.create(this.boardService.toDTO(board))
+                .assertNext(boardDTO -> {
+                    assertThat(boardDTO.getId()).isNotNull();
+                    assertThat(boardDTO.getNeutralArea()).isEmpty();
+                    assertThat(boardDTO.getHomeArea()).isEmpty();
+                    assertThat(boardDTO.getGrave()).isEmpty();
+                    assertThat(boardDTO.getDeck()).isEmpty();
+                    assertThat(boardDTO.getLifePile()).isEmpty();
+                    assertThat(boardDTO.getChampion()).isNull();
+                    assertThat(boardDTO.getBattleFieldZone()).isNull();
+                    assertThat(boardDTO.getDisruptionZoneOne()).isNull();
+                    assertThat(boardDTO.getDisruptionZoneTwo()).isNull();
+                    assertThat(boardDTO.getPortalCount()).isEqualTo(0);
+                    assertThat(boardDTO.getEngineCount()).isEqualTo(0);
+                })
+                .verifyComplete();
+    }
+
 }

@@ -2,10 +2,13 @@ package com.wykessam.tsgalpha.persistence.entity.card;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
@@ -16,9 +19,9 @@ import java.util.UUID;
  */
 @Document(collection = "card")
 @Getter
-@Builder
+@SuperBuilder
 @RequiredArgsConstructor
-public class Card implements Serializable {
+public abstract class Card implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -26,5 +29,9 @@ public class Card implements Serializable {
     @Id
     @Builder.Default
     private final UUID id = UUID.randomUUID();
+
+    @NotNull
+    @NonNull
+    private final String originalName;
 
 }
