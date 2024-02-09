@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Represents a champion card in the TCG.
  */
 @Document(collection = "card")
-@TypeAlias(value = "champion")
+@TypeAlias(value = "disruption")
 @Getter
 @SuperBuilder
-public final class ChampionCard extends CreatureCard {
+public final class DisruptionCard extends Card {
 }

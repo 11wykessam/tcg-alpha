@@ -1,5 +1,6 @@
 package com.wykessam.tsgalpha.persistence.entity.card;
 
+import com.wykessam.tsgalpha.persistence.entity.MutableAttribute;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -32,6 +33,24 @@ public abstract class Card implements Serializable {
 
     @NotNull
     @NonNull
-    private final String originalName;
+    private final MutableAttribute<String> name;
+
+    @NotNull
+    @NonNull
+    private final String originalCardText;
+
+    @NotNull
+    @NonNull
+    @Builder.Default
+    private final String cardText = this.originalCardText;
+
+    @NotNull
+    @NonNull
+    private final Integer originalSummoningRequirement;
+
+    @NotNull
+    @NonNull
+    @Builder.Default
+    private final Integer summoningRequirement;
 
 }
