@@ -1,10 +1,8 @@
 package com.wykessam.tsgalpha.persistence.entity.card;
 
-import com.wykessam.tsgalpha.persistence.entity.MutableAttribute;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,38 +17,41 @@ import java.util.UUID;
  * Represents a card in the TCG.
  */
 @Document(collection = "card")
-@Getter
+@Data
+@NoArgsConstructor
 @SuperBuilder
-@RequiredArgsConstructor
 public abstract class Card implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Builder.Default
-    private final UUID id = UUID.randomUUID();
+    @NotNull
+    @NonNull
+    private UUID id;
 
     @NotNull
     @NonNull
-    private final MutableAttribute<String> name;
+    private String originalName;
 
     @NotNull
     @NonNull
-    private final String originalCardText;
+    private String name;
 
     @NotNull
     @NonNull
-    @Builder.Default
-    private final String cardText = this.originalCardText;
+    private String originalText;
 
     @NotNull
     @NonNull
-    private final Integer originalSummoningRequirement;
+    private String text;
 
     @NotNull
     @NonNull
-    @Builder.Default
-    private final Integer summoningRequirement;
+    private Integer originalSummoningRequirement;
+
+    @NotNull
+    @NonNull
+    private Integer summoningRequirement;
 
 }

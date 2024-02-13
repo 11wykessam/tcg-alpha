@@ -1,7 +1,8 @@
 package com.wykessam.tsgalpha.persistence.entity.card;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.TypeAlias;
@@ -15,44 +16,42 @@ import javax.validation.constraints.NotNull;
  */
 @Document(collection = "card")
 @TypeAlias(value = "creature")
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 @SuperBuilder
 public class CreatureCard extends Card {
 
     @NotNull
     @NonNull
-    private final CreatureCardType originalType;
+    private CreatureCardType originalType;
 
     @NotNull
     @NonNull
-    @Builder.Default
-    private final CreatureCardType type = this.originalType;
+    private CreatureCardType type;
 
     @NotNull
     @NonNull
-    private final Integer originalSize;
+    private Integer originalSize;
 
     @NotNull
     @NonNull
-    @Builder.Default
-    private final Integer size = this.originalSize;
+    private Integer size;
 
     @NotNull
     @NonNull
-    private final Integer originalPower;
+    private Integer originalPower;
 
     @NotNull
     @NonNull
-    @Builder.Default
-    private final Integer power = this.originalPower;
+    private Integer power;
 
     @NotNull
     @NonNull
-    private final Integer originalCritical;
+    private Integer originalCritical;
 
     @NotNull
     @NonNull
-    @Builder.Default
-    private final Integer critical = this.originalCritical;
+    private Integer critical;
 
 }

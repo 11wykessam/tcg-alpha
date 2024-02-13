@@ -2,7 +2,6 @@ package com.wykessam.tsgalpha.service;
 
 import com.wykessam.tsgalpha.exception.CardNotFoundException;
 import com.wykessam.tsgalpha.persistence.entity.card.Card;
-import com.wykessam.tsgalpha.persistence.entity.card.ChampionCard;
 import com.wykessam.tsgalpha.persistence.repository.CardDBRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,20 +50,6 @@ class CardServiceTest {
 
         StepVerifier.create(this.cardService.getById(ID))
                 .verifyErrorSatisfies(error -> assertThat(error instanceof CardNotFoundException).isTrue());
-    }
-
-    @Test
-    void championToDTOSuccess() {
-        final Card card = ChampionCard.builder()
-                .id(ID)
-                .originalName(ORIGINAL_NAME)
-                .build();
-
-        StepVerifier.create(this.cardService.toDTO(card))
-                .assertNext(cardDTO -> {
-                    assertThat(cardDTO.getId()).isEqualTo(ID);
-                })
-                .verifyComplete();
     }
 
 }

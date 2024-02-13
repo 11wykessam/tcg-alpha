@@ -1,6 +1,8 @@
 package com.wykessam.tsgalpha.persistence.entity.card;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,7 +13,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = "card")
 @TypeAlias(value = "disruption")
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 @SuperBuilder
 public final class DisruptionCard extends Card {
 }
